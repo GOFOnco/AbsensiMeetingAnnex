@@ -45,7 +45,6 @@
       gap: 16px;
       position: relative;
     }
-    /* Area untuk klik 3x (pojok kanan atas) */
     .secret-click-area {
       position: absolute;
       top: 0;
@@ -95,7 +94,6 @@
       background: #e6f5ed;
     }
 
-    /* navigasi */
     .nav-tabs {
       display: flex;
       gap: 4px;
@@ -130,19 +128,16 @@
     .nav-tab:hover:not(.active) {
       background: rgba(255,255,255,0.5);
     }
-    /* Hanya Absensi Meeting dan Management yang disembunyikan */
     .nav-tab.hidden-tab {
       display: none;
     }
     .nav-tab.hidden-tab.visible {
       display: inline-flex;
     }
-    /* Kalender tetap terlihat */
     .nav-tab.calendar-tab {
       display: inline-flex;
     }
 
-    /* main content */
     .content {
       padding: 32px;
       background: #fafcff;
@@ -150,7 +145,6 @@
       overflow: hidden;
     }
 
-    /* page */
     .page {
       display: none;
       animation: fade 0.25s ease;
@@ -163,7 +157,6 @@
       100% { opacity: 1; transform: translateY(0); }
     }
 
-    /* card & grid */
     .card {
       background: white;
       border-radius: 24px;
@@ -197,7 +190,6 @@
       white-space: nowrap;
     }
 
-    /* Dashboard Stats */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -234,7 +226,6 @@
     .stat-card.warning .stat-icon { color: #e67e22; }
     .stat-card.info .stat-icon { color: #1a7a8a; }
 
-    /* Dashboard Charts */
     .chart-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -267,12 +258,13 @@
       flex-wrap: wrap;
     }
     .chart-bar-item .label {
-      min-width: 80px;
+      min-width: 140px;
       font-size: 13px;
       font-weight: 500;
       color: #2c4a6e;
       word-wrap: break-word;
       flex-shrink: 0;
+      line-height: 1.3;
     }
     .chart-bar-item .bar-track {
       flex: 1;
@@ -336,7 +328,101 @@
       flex-shrink: 0;
     }
 
-    /* CALENDAR */
+    /* MOM List di Dashboard */
+    .mom-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .mom-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      background: #f9fbfe;
+      border-radius: 16px;
+      border: 1px solid #eef3f9;
+      transition: 0.15s;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .mom-item:hover {
+      background: #f5f9ff;
+      border-color: #d0dae8;
+    }
+    .mom-item .mom-info {
+      flex: 1;
+      min-width: 150px;
+    }
+    .mom-item .mom-info .mom-title {
+      font-weight: 600;
+      color: #0b2b4a;
+      word-wrap: break-word;
+    }
+    .mom-item .mom-info .mom-meta {
+      font-size: 13px;
+      color: #5e7395;
+      margin-top: 2px;
+      word-wrap: break-word;
+    }
+    .mom-item .mom-info .mom-text {
+      font-size: 13px;
+      color: #1b3552;
+      margin-top: 4px;
+      word-wrap: break-word;
+    }
+    .mom-item .mom-info .mom-status {
+      display: inline-block;
+      padding: 2px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .mom-item .mom-info .mom-status.status-onprogress {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .mom-item .mom-info .mom-status.status-closed {
+      background: #d4edda;
+      color: #155724;
+    }
+    .mom-item .mom-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .mom-item .mom-actions .btn-update-mom {
+      background: #eef5ff;
+      color: #1f5fbe;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .mom-item .mom-actions .btn-update-mom:hover {
+      background: #dce7f5;
+    }
+    .mom-item .mom-actions .btn-update-mom.hidden {
+      display: none;
+    }
+    .mom-item .mom-actions .mom-closed-label {
+      font-size: 13px;
+      color: #155724;
+      font-weight: 600;
+      padding: 6px 12px;
+      background: #d4edda;
+      border-radius: 30px;
+    }
+    .empty-mom {
+      color: #8899b5;
+      font-style: italic;
+      text-align: center;
+      padding: 20px 0;
+    }
+
     .calendar-container {
       background: white;
       border-radius: 20px;
@@ -449,7 +535,6 @@
       background: #e8f0fe;
     }
 
-    /* schedule card */
     .schedule-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -547,7 +632,6 @@
       word-wrap: break-word;
     }
 
-    /* modal absensi */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -564,7 +648,7 @@
     }
     .modal-box {
       background: white;
-      max-width: 560px;
+      max-width: 600px;
       width: 100%;
       border-radius: 32px;
       padding: 32px 36px;
@@ -611,7 +695,7 @@
       flex-direction: column;
       gap: 12px;
       margin: 16px 0 20px;
-      max-height: 400px;
+      max-height: 300px;
       overflow-y: auto;
     }
     .modal-dept-item {
@@ -670,6 +754,116 @@
       background: #1a5fb0;
       transform: scale(1.03);
     }
+
+    /* MOM Section di Modal */
+    .mom-section {
+      margin: 16px 0 20px;
+      padding: 16px 20px;
+      background: #f5f9ff;
+      border-radius: 16px;
+      border: 1px solid #dfe9f3;
+    }
+    .mom-section .mom-title {
+      font-weight: 600;
+      color: #1b3552;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .mom-section .mom-title i {
+      color: #2a7de1;
+      margin-right: 6px;
+    }
+    .mom-section .mom-input-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .mom-section .mom-input-group input[type="text"] {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 16px;
+      border: 1px solid #d6e0ed;
+      border-radius: 60px;
+      font-size: 14px;
+      background: white;
+      transition: 0.15s;
+    }
+    .mom-section .mom-input-group input[type="text"]:focus {
+      outline: none;
+      border-color: #2a7de1;
+      box-shadow: 0 0 0 3px rgba(42,125,225,0.15);
+    }
+    .mom-section .mom-input-group input[type="text"]::placeholder {
+      color: #a0b2c9;
+    }
+    .mom-section .mom-input-group .btn-add-mom {
+      background: #0f7b4f;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .mom-section .mom-input-group .btn-add-mom:hover {
+      background: #0a5f3d;
+      transform: scale(1.02);
+    }
+    .mom-section .mom-list-modal {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .mom-section .mom-list-modal .mom-item-modal {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 14px;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #eef3f9;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .mom-section .mom-list-modal .mom-item-modal .mom-text {
+      flex: 1;
+      font-size: 13px;
+      color: #1b3552;
+      word-wrap: break-word;
+    }
+    .mom-section .mom-list-modal .mom-item-modal .mom-text i {
+      color: #2a7de1;
+      margin-right: 6px;
+    }
+    .mom-section .mom-list-modal .mom-item-modal .btn-remove-mom {
+      background: #fee9e7;
+      color: #c0392b;
+      border: none;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.15s;
+      flex-shrink: 0;
+    }
+    .mom-section .mom-list-modal .mom-item-modal .btn-remove-mom:hover {
+      background: #fdd5d2;
+    }
+    .mom-section .empty-mom-modal {
+      color: #8899b5;
+      font-style: italic;
+      font-size: 13px;
+      padding: 8px 0;
+    }
+
     .modal-footer {
       display: flex;
       gap: 12px;
@@ -705,7 +899,81 @@
       background: #1a3f62;
     }
 
-    /* Password Modal */
+    /* Modal Update MOM Status */
+    .update-mom-modal .modal-box {
+      max-width: 500px;
+    }
+    .update-mom-modal .form-group-status {
+      margin: 16px 0;
+    }
+    .update-mom-modal .form-group-status label {
+      display: block;
+      font-weight: 600;
+      color: #1b3552;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .update-mom-modal .form-group-status .radio-group {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .update-mom-modal .form-group-status .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      color: #1f3a5a;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .update-mom-modal .form-group-status .radio-group input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #2a7de1;
+    }
+    .update-mom-modal .form-group-action {
+      margin: 16px 0;
+    }
+    .update-mom-modal .form-group-action label {
+      display: block;
+      font-weight: 600;
+      color: #1b3552;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .update-mom-modal .form-group-action textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #d6e0ed;
+      border-radius: 16px;
+      font-size: 14px;
+      background: white;
+      transition: 0.15s;
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+    }
+    .update-mom-modal .form-group-action textarea:focus {
+      outline: none;
+      border-color: #2a7de1;
+      box-shadow: 0 0 0 3px rgba(42,125,225,0.15);
+    }
+    .update-mom-modal .mom-text-display {
+      padding: 12px 16px;
+      background: #f5f9ff;
+      border-radius: 12px;
+      border: 1px solid #dfe9f3;
+      margin-bottom: 16px;
+      word-wrap: break-word;
+      font-size: 14px;
+      color: #1b3552;
+    }
+    .update-mom-modal .mom-text-display i {
+      color: #2a7de1;
+      margin-right: 6px;
+    }
+
     .password-modal .modal-box {
       max-width: 420px;
     }
@@ -767,7 +1035,6 @@
       background: #dbe3ef;
     }
 
-    /* management form */
     .form-group {
       margin-bottom: 20px;
     }
@@ -933,7 +1200,6 @@
       transform: translateY(0);
     }
 
-    /* management jadwal list */
     .schedule-manage-item {
       display: flex;
       justify-content: space-between;
@@ -1010,7 +1276,6 @@
       background: #fdd5d2;
     }
 
-    /* Department Management */
     .dept-management-wrapper {
       background: #f8faff;
       border-radius: 20px;
@@ -1114,7 +1379,6 @@
       transform: scale(1.02);
     }
 
-    /* Table detail */
     #detailTableContainer {
       overflow-x: auto;
       width: 100%;
@@ -1194,6 +1458,17 @@
       #detailTableContainer table td {
         padding: 6px 10px;
       }
+      .chart-bar-item .label {
+        min-width: 100px;
+        font-size: 12px;
+      }
+      .mom-section .mom-input-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .mom-section .mom-input-group .btn-add-mom {
+        justify-content: center;
+      }
     }
     @media (max-width: 640px) {
       .header { flex-direction: column; align-items: flex-start; }
@@ -1220,6 +1495,17 @@
         width: 60px;
         height: 60px;
       }
+      .chart-bar-item .label {
+        min-width: 80px;
+        font-size: 11px;
+      }
+      .chart-bar-item .bar-track {
+        height: 20px;
+      }
+      .chart-bar-item .bar-fill {
+        font-size: 10px;
+        min-width: 25px;
+      }
     }
     @media (max-width: 400px) {
       .nav-tab { font-size: 11px; padding: 6px 10px; }
@@ -1227,6 +1513,10 @@
       .logo small { display: block; margin-left: 0; }
       .schedule-card { padding: 14px; }
       .dept-management-wrapper { padding: 12px; }
+      .chart-bar-item .label {
+        min-width: 60px;
+        font-size: 10px;
+      }
     }
   </style>
 </head>
@@ -1291,6 +1581,15 @@
             <div class="pie-legend" id="pieLegend"></div>
           </div>
         </div>
+      </div>
+
+      <!-- MOM List di Dashboard -->
+      <div class="card" style="margin-top: 8px;">
+        <div class="card-header">
+          <h3><i class="fas fa-file-alt" style="color:#2a7de1;"></i> List Minutes of Meeting (MoM)</h3>
+          <span class="badge" id="momBadge">0 MoM</span>
+        </div>
+        <div id="momListContainer" class="mom-list"></div>
       </div>
 
       <div class="card" style="margin-top: 8px;">
@@ -1435,18 +1734,66 @@
   </div>
 </div>
 
-<!-- MODAL ABSENSI -->
+<!-- MODAL ABSENSI + MOM -->
 <div class="modal-overlay" id="attendanceModal">
   <div class="modal-box">
     <div class="modal-header">
-      <h2 id="modalTitle">Detail Kehadiran</h2>
+      <h2 id="modalTitle">Detail Kehadiran & MoM</h2>
       <button class="modal-close" id="closeModalBtn">&times;</button>
     </div>
-    <div class="sub" id="modalSub">Update jumlah hadir per departemen</div>
+    <div class="sub" id="modalSub">Update jumlah hadir per departemen dan kelola MoM</div>
     <div id="modalDeptList" class="modal-dept-list"></div>
+    
+    <!-- MOM Section -->
+    <div class="mom-section">
+      <div class="mom-title"><i class="fas fa-file-alt"></i> Minutes of Meeting (MoM)</div>
+      <div class="mom-input-group">
+        <input type="text" id="momInput" placeholder="Masukkan link/note MoM...">
+        <button class="btn-add-mom" id="addMomBtn"><i class="fas fa-plus"></i> Tambah MoM</button>
+      </div>
+      <div id="momListModal" class="mom-list-modal">
+        <!-- akan di render oleh js -->
+      </div>
+    </div>
+
     <div class="modal-footer">
       <button class="btn-close-modal" id="closeModalFooterBtn">Tutup</button>
       <button class="btn-save-all" id="saveAllModalBtn"><i class="fas fa-save"></i> Simpan Semua</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL UPDATE MOM STATUS -->
+<div class="modal-overlay update-mom-modal" id="updateMomModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><i class="fas fa-edit" style="color:#2a7de1;"></i> Update Status & Action MoM</h2>
+      <button class="modal-close" id="closeUpdateMomModalBtn">&times;</button>
+    </div>
+    <div class="sub">Perbarui status dan action Minutes of Meeting</div>
+    <div class="mom-text-display">
+      <i class="fas fa-file-alt"></i> <span id="updateMomText">-</span>
+    </div>
+    <div class="form-group-status">
+      <label>Status:</label>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="momStatus" value="onprogress" checked>
+          <span class="mom-status status-onprogress" style="display:inline-block; padding:2px 12px; border-radius:30px; font-size:12px; font-weight:600;">On Progress</span>
+        </label>
+        <label>
+          <input type="radio" name="momStatus" value="closed">
+          <span class="mom-status status-closed" style="display:inline-block; padding:2px 12px; border-radius:30px; font-size:12px; font-weight:600;">Closed</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-group-action">
+      <label>Action:</label>
+      <textarea id="updateMomAction" placeholder="Masukkan action plan atau tindak lanjut untuk MoM ini..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-close-modal" id="closeUpdateMomBtn">Batal</button>
+      <button class="btn-save-all" id="saveUpdateMomBtn"><i class="fas fa-save"></i> Simpan</button>
     </div>
   </div>
 </div>
@@ -1481,6 +1828,14 @@
     // Password yang benar
     const CORRECT_PASSWORD = 'admin123';
 
+    // State untuk update MOM
+    let updateMomData = {
+      scheduleId: null,
+      momText: null,
+      currentStatus: 'onprogress',
+      currentAction: ''
+    };
+
     function initSample() {
       if (schedules.length === 0) {
         schedules.push({
@@ -1490,7 +1845,11 @@
           time: '09:00',
           location: 'Meeting Room A',
           targetDepts: ['HRD', 'Engineering', 'Marketing'],
-          attendance: { 'HRD': 8, 'Engineering': 12, 'Marketing': 6 } 
+          attendance: { 'HRD': 8, 'Engineering': 12, 'Marketing': 6 },
+          mom: [
+            { text: 'https://docs.google.com/document/d/1', status: 'onprogress', action: 'Review dokumen dan buat summary' },
+            { text: 'Catatan penting: Follow up action items', status: 'closed', action: 'Semua action item sudah selesai' }
+          ]
         });
         schedules.push({
           id: Date.now() + 2,
@@ -1499,7 +1858,11 @@
           time: '13:30',
           location: 'Lab 2',
           targetDepts: ['Engineering', 'Finance', 'Operations'],
-          attendance: { 'Engineering': 10, 'Finance': 4, 'Operations': 7 }
+          attendance: { 'Engineering': 10, 'Finance': 4, 'Operations': 7 },
+          mom: [
+            { text: 'https://drive.google.com/file/d/2', status: 'onprogress', action: 'Upload file ke repository' },
+            { text: 'Sprint review notes', status: 'closed', action: 'Sprint review sudah selesai' }
+          ]
         });
         schedules.push({
           id: Date.now() + 3,
@@ -1508,7 +1871,10 @@
           time: '10:00',
           location: 'Meeting Center',
           targetDepts: ['HRD', 'Marketing', 'Sales', 'Finance'],
-          attendance: { 'HRD': 5, 'Marketing': 8, 'Sales': 6, 'Finance': 3 }
+          attendance: { 'HRD': 5, 'Marketing': 8, 'Sales': 6, 'Finance': 3 },
+          mom: [
+            { text: 'Soft skills training materials', status: 'onprogress', action: 'Distribusikan materi ke peserta' }
+          ]
         });
         schedules.push({
           id: Date.now() + 4,
@@ -1517,7 +1883,11 @@
           time: '14:00',
           location: 'Online',
           targetDepts: ['Engineering', 'Operations', 'Sales'],
-          attendance: { 'Engineering': 15, 'Operations': 5, 'Sales': 4 }
+          attendance: { 'Engineering': 15, 'Operations': 5, 'Sales': 4 },
+          mom: [
+            { text: 'https://docs.google.com/presentation/d/3', status: 'closed', action: 'Presentasi sudah disampaikan' },
+            { text: 'Agile framework summary', status: 'onprogress', action: 'Buat dokumentasi lengkap' }
+          ]
         });
       }
     }
@@ -1555,6 +1925,21 @@
     const closeModalBtn = document.getElementById('closeModalBtn');
     const closeModalFooterBtn = document.getElementById('closeModalFooterBtn');
     const saveAllModalBtn = document.getElementById('saveAllModalBtn');
+
+    // MOM
+    const momInput = document.getElementById('momInput');
+    const addMomBtn = document.getElementById('addMomBtn');
+    const momListModal = document.getElementById('momListModal');
+    const momListContainer = document.getElementById('momListContainer');
+    const momBadge = document.getElementById('momBadge');
+
+    // Update MOM Modal
+    const updateMomModal = document.getElementById('updateMomModal');
+    const updateMomText = document.getElementById('updateMomText');
+    const updateMomAction = document.getElementById('updateMomAction');
+    const closeUpdateMomModalBtn = document.getElementById('closeUpdateMomModalBtn');
+    const closeUpdateMomBtn = document.getElementById('closeUpdateMomBtn');
+    const saveUpdateMomBtn = document.getElementById('saveUpdateMomBtn');
 
     // password modal
     const passwordModal = document.getElementById('passwordModal');
@@ -1596,6 +1981,7 @@
     // ----- state untuk modal -----
     let currentModalScheduleId = null;
     let modalTempData = {};
+    let modalTempMom = [];
     let calendarCurrentDate = new Date();
 
     // ----- helper functions -----
@@ -1614,6 +2000,17 @@
       return Date.now() + Math.floor(Math.random() * 1000);
     }
 
+    function isUrl(str) {
+      return str.startsWith('http://') || str.startsWith('https://') || str.startsWith('www.');
+    }
+
+    function getStatusBadge(status) {
+      if (status === 'closed') {
+        return '<span class="mom-status status-closed">Closed</span>';
+      }
+      return '<span class="mom-status status-onprogress">On Progress</span>';
+    }
+
     // ----- UNLOCK / LOCK FUNCTIONS -----
     function unlockMenu() {
       isUnlocked = true;
@@ -1628,7 +2025,6 @@
       hiddenTabs.forEach(tab => tab.classList.remove('visible'));
       lockIcon.innerHTML = '<i class="fas fa-lock"></i>';
       lockIcon.classList.remove('unlocked');
-      // Jika sedang di halaman yang tersembunyi, pindah ke dashboard
       const activeTab = document.querySelector('.nav-tab.active');
       if (activeTab && (activeTab.dataset.page === 'absensi' || activeTab.dataset.page === 'management')) {
         switchPage('dashboard');
@@ -1706,7 +2102,130 @@
       if (e.key === 'Enter') verifyPassword();
     });
 
+    // ----- UPDATE MOM MODAL FUNCTIONS -----
+    function openUpdateMomModal(scheduleId, momText, currentStatus, currentAction) {
+      updateMomData.scheduleId = scheduleId;
+      updateMomData.momText = momText;
+      updateMomData.currentStatus = currentStatus || 'onprogress';
+      updateMomData.currentAction = currentAction || '';
+      
+      updateMomText.textContent = momText;
+      updateMomAction.value = currentAction || '';
+      
+      // Set radio button sesuai status
+      document.querySelectorAll('input[name="momStatus"]').forEach(radio => {
+        radio.checked = radio.value === currentStatus;
+      });
+      
+      updateMomModal.classList.add('show');
+    }
+
+    function closeUpdateMomModal() {
+      updateMomModal.classList.remove('show');
+      updateMomData = { scheduleId: null, momText: null, currentStatus: 'onprogress', currentAction: '' };
+      updateMomAction.value = '';
+    }
+
+    function saveUpdateMom() {
+      const selectedStatus = document.querySelector('input[name="momStatus"]:checked');
+      if (!selectedStatus) {
+        showToast('⚠️ Pilih status terlebih dahulu.');
+        return;
+      }
+      
+      const newStatus = selectedStatus.value;
+      const action = updateMomAction.value.trim();
+      
+      const schedule = schedules.find(s => s.id === updateMomData.scheduleId);
+      if (!schedule) {
+        showToast('⚠️ Data tidak ditemukan.');
+        return;
+      }
+      
+      // Update status dan action di array mom
+      const momIndex = schedule.mom.findIndex(m => m.text === updateMomData.momText);
+      if (momIndex !== -1) {
+        schedule.mom[momIndex].status = newStatus;
+        schedule.mom[momIndex].action = action;
+        renderAll();
+        closeUpdateMomModal();
+        showToast('✅ Status dan Action MoM berhasil diupdate!');
+      } else {
+        showToast('⚠️ MoM tidak ditemukan.');
+      }
+    }
+
+    // ----- UPDATE MOM MODAL EVENTS -----
+    closeUpdateMomModalBtn.addEventListener('click', closeUpdateMomModal);
+    closeUpdateMomBtn.addEventListener('click', closeUpdateMomModal);
+    saveUpdateMomBtn.addEventListener('click', saveUpdateMom);
+    updateMomModal.addEventListener('click', function(e) {
+      if (e.target === updateMomModal) closeUpdateMomModal();
+    });
+
     // ----- DASHBOARD FUNCTIONS -----
+    function renderMomList() {
+      const allMom = [];
+      schedules.forEach(s => {
+        if (s.mom && s.mom.length > 0) {
+          s.mom.forEach(m => {
+            allMom.push({
+              meetingName: s.name,
+              meetingDate: s.date,
+              mom: m.text,
+              status: m.status || 'onprogress',
+              action: m.action || '',
+              scheduleId: s.id
+            });
+          });
+        }
+      });
+
+      momBadge.textContent = allMom.length + ' MoM';
+
+      if (allMom.length === 0) {
+        momListContainer.innerHTML = '<div class="empty-mom">Belum ada MoM yang diupload.</div>';
+        return;
+      }
+
+      momListContainer.innerHTML = allMom.map((item) => {
+        const isLink = isUrl(item.mom);
+        const displayText = isLink ? '🔗 ' + item.mom : item.mom;
+        const isClosed = item.status === 'closed';
+        return `
+          <div class="mom-item">
+            <div class="mom-info">
+              <div class="mom-title">${item.meetingName}</div>
+              <div class="mom-meta">
+                <i class="far fa-calendar"></i> ${formatDate(item.meetingDate)} 
+                ${isLink ? `<a href="${item.mom}" target="_blank" style="color:#2a7de1; text-decoration:none; margin-left:8px;"><i class="fas fa-external-link-alt"></i> Buka Link</a>` : ''}
+              </div>
+              <div class="mom-text">
+                ${isLink ? '' : displayText}
+                ${item.action ? `<br><span style="font-size:12px; color:#2a7de1;"><i class="fas fa-tasks"></i> Action: ${item.action}</span>` : ''}
+              </div>
+              <div>
+                ${getStatusBadge(item.status)}
+              </div>
+            </div>
+            <div class="mom-actions">
+              ${isClosed ? 
+                `<span class="mom-closed-label"><i class="fas fa-check-circle"></i> Closed</span>` :
+                `<button class="btn-update-mom" onclick="openUpdateMomModal(${item.scheduleId}, '${item.mom.replace(/'/g, "\\'")}', '${item.status}', '${item.action.replace(/'/g, "\\'")}')">
+                  <i class="fas fa-edit"></i> Update
+                </button>`
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Global function untuk open update mom
+    window.openUpdateMomModal = function(scheduleId, momText, status, action) {
+      openUpdateMomModal(scheduleId, momText, status, action || '');
+    };
+
     function updateDashboard() {
       const totalMeeting = schedules.length;
       let totalParticipants = 0;
@@ -1746,9 +2265,8 @@
         MeetingChart.innerHTML = schedules.map(s => {
           const total = Object.values(s.attendance || {}).reduce((a, b) => a + b, 0);
           const percentage = Math.round((total / maxAttendance) * 100);
-          const shortName = s.name.length > 15 ? s.name.substring(0, 12) + '...' : s.name;
           return `<div class="chart-bar-item">
-            <span class="label">${shortName}</span>
+            <span class="label">${s.name}</span>
             <div class="bar-track">
               <div class="bar-fill" style="width: ${percentage}%; min-width: 30px;">${total}</div>
             </div>
@@ -1833,6 +2351,9 @@
 
       tableHtml += `</tbody></table>`;
       tableContainer.innerHTML = tableHtml;
+
+      // Render MOM List
+      renderMomList();
     }
 
     // ----- CALENDAR FUNCTIONS -----
@@ -1929,6 +2450,12 @@
         const deptList = s.targetDepts ? s.targetDepts.join(', ') : '-';
         const attendance = s.attendance || {};
         const totalHadir = Object.values(attendance).reduce((a, b) => a + b, 0);
+        const momList = s.mom && s.mom.length > 0 ? s.mom.map(m => {
+          const isLink = isUrl(m.text);
+          const statusBadge = getStatusBadge(m.status);
+          const actionText = m.action ? `<br><span style="font-size:12px; color:#2a7de1;"><i class="fas fa-tasks"></i> Action: ${m.action}</span>` : '';
+          return isLink ? `<a href="${m.text}" target="_blank" style="color:#2a7de1;">🔗 Link</a> ${statusBadge}${actionText}` : `${m.text} ${statusBadge}${actionText}`;
+        }).join('<br>') : '-';
         content += `
           <div style="background:#f5f9ff; padding:14px 18px; border-radius:16px; margin-bottom:10px; border-left:4px solid #2a7de1; word-wrap:break-word;">
             <div style="font-weight:700; color:#0b2b4a; font-size:16px; word-wrap:break-word;">${s.name}</div>
@@ -1940,6 +2467,9 @@
             </div>
             <div style="font-size:13px; color:#0f7b4f; margin-top:2px; font-weight:600;">
               <i class="fas fa-user-check"></i> Total hadir: ${totalHadir} orang
+            </div>
+            <div style="font-size:13px; color:#1a7a8a; margin-top:2px; word-wrap:break-word;">
+              <i class="fas fa-file-alt"></i> MoM: <br>${momList}
             </div>
           </div>
         `;
@@ -2020,7 +2550,7 @@
             <span><i class="fas fa-users"></i> ${totalTarget} dept target</span>
             <span style="color:#1f6f4a;"><i class="fas fa-user-check"></i> ${totalHadir} total hadir</span>
           </div>
-          <div class="click-hint"><i class="fas fa-hand-pointer"></i> Klik untuk update kehadiran</div>
+          <div class="click-hint"><i class="fas fa-hand-pointer"></i> Klik untuk update kehadiran & MoM</div>
         </div>`;
       }).join('');
 
@@ -2069,6 +2599,7 @@
       
       currentModalScheduleId = scheduleId;
       modalTempData = { ...schedule.attendance } || {};
+      modalTempMom = schedule.mom ? schedule.mom.map(m => ({ ...m })) : [];
       
       modalTitle.textContent = schedule.name;
       modalSub.textContent = `${schedule.date} · ${schedule.time} · ${schedule.location}`;
@@ -2111,14 +2642,67 @@
           });
         });
       }
+
+      // Render MOM list in modal
+      renderMomModal();
       
       modalOverlay.classList.add('show');
     }
+
+    function renderMomModal() {
+      if (modalTempMom.length === 0) {
+        momListModal.innerHTML = '<div class="empty-mom-modal">Belum ada MoM untuk meeting ini.</div>';
+        return;
+      }
+
+      momListModal.innerHTML = modalTempMom.map((m, index) => {
+        const isLink = isUrl(m.text);
+        const statusBadge = getStatusBadge(m.status || 'onprogress');
+        const actionText = m.action ? `<br><span style="font-size:11px; color:#2a7de1;"><i class="fas fa-tasks"></i> ${m.action}</span>` : '';
+        return `
+          <div class="mom-item-modal">
+            <div class="mom-text">
+              ${isLink ? `<i class="fas fa-link"></i> <a href="${m.text}" target="_blank" style="color:#2a7de1; text-decoration:none;">${m.text}</a>` : `<i class="fas fa-file-alt"></i> ${m.text}`}
+              ${statusBadge}
+              ${actionText}
+            </div>
+            <button class="btn-remove-mom" onclick="removeMomTemp(${index})"><i class="fas fa-times"></i> Hapus</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Global function untuk remove mom temporary
+    window.removeMomTemp = function(index) {
+      modalTempMom.splice(index, 1);
+      renderMomModal();
+    };
+
+    // Add MOM
+    addMomBtn.addEventListener('click', function() {
+      const momText = momInput.value.trim();
+      if (!momText) {
+        showToast('⚠️ Masukkan link atau note MoM.');
+        return;
+      }
+      modalTempMom.push({ text: momText, status: 'onprogress', action: '' });
+      momInput.value = '';
+      renderMomModal();
+      showToast('✅ MoM ditambahkan (tersimpan sementara)');
+    });
+
+    momInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        addMomBtn.click();
+      }
+    });
 
     function closeModal() {
       modalOverlay.classList.remove('show');
       currentModalScheduleId = null;
       modalTempData = {};
+      modalTempMom = [];
+      momInput.value = '';
     }
 
     function saveAllModal() {
@@ -2127,13 +2711,17 @@
       const schedule = schedules.find(s => s.id === currentModalScheduleId);
       if (!schedule) return;
       
+      // Save attendance
       Object.keys(modalTempData).forEach(dept => {
         schedule.attendance[dept] = modalTempData[dept];
       });
       
+      // Save MOM (dengan status dan action)
+      schedule.mom = modalTempMom.map(m => ({ ...m }));
+      
       renderAll();
       closeModal();
-      showToast('✅ Semua perubahan kehadiran telah disimpan!');
+      showToast('✅ Semua perubahan kehadiran dan MoM telah disimpan!');
     }
 
     // ----- EDIT & DELETE FUNCTIONS (global) -----
@@ -2245,7 +2833,8 @@
             time: time,
             location: location,
             targetDepts: targetDepts,
-            attendance: newAttendance
+            attendance: newAttendance,
+            mom: schedules[index].mom || []
           };
           
           showToast('✅ Jadwal berhasil diupdate!');
@@ -2261,7 +2850,8 @@
           time: time,
           location: location,
           targetDepts: targetDepts,
-          attendance: attendance
+          attendance: attendance,
+          mom: []
         };
         schedules.push(newSchedule);
         showToast('✅ Jadwal Meeting berhasil disimpan!');
@@ -2294,7 +2884,6 @@
       tab.addEventListener('click', function() {
         const page = this.dataset.page;
         if (page) {
-          // Cek jika mencoba akses halaman tersembunyi tanpa unlock
           if (this.classList.contains('hidden-tab') && !isUnlocked) {
             openPasswordModal();
             return;
@@ -2328,7 +2917,6 @@
     });
 
     // ----- inisialisasi -----
-    // Pastikan hidden tabs tersembunyi di awal
     lockMenu();
     
     renderAll();
