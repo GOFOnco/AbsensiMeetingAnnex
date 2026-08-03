@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
-  <title>Digitalisasi Absensi Training</title>
+  <title>Digitalisasi Absensi Meeting Annex</title>
   <!-- Font & Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -130,7 +130,7 @@
     .nav-tab:hover:not(.active) {
       background: rgba(255,255,255,0.5);
     }
-    /* Hanya Absensi Training dan Management yang disembunyikan */
+    /* Hanya Absensi Meeting dan Management yang disembunyikan */
     .nav-tab.hidden-tab {
       display: none;
     }
@@ -1243,7 +1243,7 @@
       <div class="nav-tabs" id="navTabs">
         <button class="nav-tab active" data-page="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</button>
         <button class="nav-tab calendar-tab" data-page="calendar"><i class="fas fa-calendar-alt"></i> Kalender</button>
-        <button class="nav-tab hidden-tab" data-page="absensi"><i class="fas fa-calendar-check"></i> Absensi Training</button>
+        <button class="nav-tab hidden-tab" data-page="absensi"><i class="fas fa-calendar-check"></i> Absensi Meeting</button>
         <button class="nav-tab hidden-tab" data-page="management"><i class="fas fa-sliders-h"></i> Management</button>
       </div>
     </div>
@@ -1259,8 +1259,8 @@
       <div class="stats-grid" id="statsGrid">
         <div class="stat-card primary">
           <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
-          <div class="stat-number" id="totalTraining">0</div>
-          <div class="stat-label">Total Training</div>
+          <div class="stat-number" id="totalMeeting">0</div>
+          <div class="stat-label">Total Meeting</div>
         </div>
         <div class="stat-card success">
           <div class="stat-icon"><i class="fas fa-users"></i></div>
@@ -1281,8 +1281,8 @@
 
       <div class="chart-container">
         <div class="chart-box">
-          <h4><i class="fas fa-chart-bar" style="color:#2a7de1;"></i> Kehadiran per Training</h4>
-          <div class="chart-bar" id="trainingChart"></div>
+          <h4><i class="fas fa-chart-bar" style="color:#2a7de1;"></i> Kehadiran per Meeting</h4>
+          <div class="chart-bar" id="MeetingChart"></div>
         </div>
         <div class="chart-box">
           <h4><i class="fas fa-chart-pie" style="color:#2a7de1;"></i> Distribusi Kehadiran per Departemen</h4>
@@ -1295,7 +1295,7 @@
 
       <div class="card" style="margin-top: 8px;">
         <div class="card-header">
-          <h3><i class="fas fa-table" style="color:#2a7de1;"></i> Detail Kehadiran per Training</h3>
+          <h3><i class="fas fa-table" style="color:#2a7de1;"></i> Detail Kehadiran per Meeting</h3>
         </div>
         <div id="detailTableContainer"></div>
       </div>
@@ -1305,7 +1305,7 @@
     <div id="page-calendar" class="page">
       <div class="card">
         <div class="card-header">
-          <h3><i class="fas fa-calendar-alt" style="color:#2a7de1;"></i> Kalender Training</h3>
+          <h3><i class="fas fa-calendar-alt" style="color:#2a7de1;"></i> Kalender Meeting</h3>
           <span class="badge" id="calendarBadge">Lihat jadwal</span>
         </div>
         <div class="calendar-container">
@@ -1320,22 +1320,22 @@
         </div>
         <div style="margin-top: 16px; padding: 12px 16px; background: #f5f9ff; border-radius: 16px; font-size: 13px; color: #476085; word-wrap: break-word;">
           <i class="fas fa-info-circle" style="color:#2a7de1;"></i> 
-          Klik tanggal dengan event untuk melihat detail training. Warna biru pada event menandakan training, angka menunjukkan jumlah departemen target.
+          Klik tanggal dengan event untuk melihat detail Meeting. Warna biru pada event menandakan Meeting, angka menunjukkan jumlah departemen target.
         </div>
       </div>
     </div>
 
-    <!-- ABSENSI TRAINING -->
+    <!-- ABSENSI Meeting -->
     <div id="page-absensi" class="page">
       <div class="card">
         <div class="card-header">
-          <h3><i class="fas fa-calendar-alt" style="color:#2a7de1;"></i> Jadwal Training & Kehadiran</h3>
+          <h3><i class="fas fa-calendar-alt" style="color:#2a7de1;"></i> Jadwal Meeting & Kehadiran</h3>
           <span class="badge" id="totalScheduleBadge">0 jadwal</span>
         </div>
         <div id="scheduleList" class="schedule-grid"></div>
         <div id="emptySchedule" class="empty-state" style="text-align:center; padding: 36px 0; display: none;">
           <i class="fas fa-calendar-plus" style="font-size: 32px; color:#b0c7df;"></i>
-          <p style="margin-top: 12px;">Belum ada jadwal training. Buat di menu Management.</p>
+          <p style="margin-top: 12px;">Belum ada jadwal Meeting. Buat di menu Management.</p>
         </div>
       </div>
     </div>
@@ -1343,7 +1343,7 @@
     <!-- MANAGEMENT -->
     <div id="page-management" class="page">
       <div class="card">
-        <div class="card-header"><h3><i class="fas fa-cog" style="color:#2a7de1;"></i> Management Training</h3></div>
+        <div class="card-header"><h3><i class="fas fa-cog" style="color:#2a7de1;"></i> Management Meeting</h3></div>
         
         <!-- Department Management -->
         <div class="dept-management-wrapper">
@@ -1367,26 +1367,26 @@
         </div>
 
         <!-- Form untuk tambah / edit -->
-        <h4 style="margin: 16px 0 12px; color:#1f3a5a; word-wrap: break-word;" id="formTitle"><i class="fas fa-plus-circle"></i> Buat Jadwal Training Baru</h4>
-        <div id="trainingForm">
+        <h4 style="margin: 16px 0 12px; color:#1f3a5a; word-wrap: break-word;" id="formTitle"><i class="fas fa-plus-circle"></i> Buat Jadwal Meeting Baru</h4>
+        <div id="MeetingForm">
           <input type="hidden" id="editScheduleId" value="">
           <div class="form-group">
-            <label>Nama Training</label>
-            <input type="text" id="trainingName" placeholder="Misal: Leadership Bootcamp">
+            <label>Nama Meeting</label>
+            <input type="text" id="MeetingName" placeholder="Misal: Leadership Bootcamp">
           </div>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
             <div class="form-group">
               <label>Tanggal</label>
-              <input type="date" id="trainingDate">
+              <input type="date" id="MeetingDate">
             </div>
             <div class="form-group">
               <label>Jam</label>
-              <input type="time" id="trainingTime" value="09:00">
+              <input type="time" id="MeetingTime" value="09:00">
             </div>
           </div>
           <div class="form-group">
             <label>Lokasi</label>
-            <input type="text" id="trainingLocation" placeholder="Ruangan / Online">
+            <input type="text" id="MeetingLocation" placeholder="Ruangan / Online">
           </div>
           <div class="form-group">
             <label><i class="fas fa-users"></i> Target departemen hadir (checkbox)</label>
@@ -1404,12 +1404,12 @@
       <!-- Daftar Jadwal yang sudah dibuat -->
       <div class="card">
         <div class="card-header">
-          <h3><i class="fas fa-list"></i> Daftar Jadwal Training</h3>
+          <h3><i class="fas fa-list"></i> Daftar Jadwal Meeting</h3>
           <span class="badge" id="manageListBadge">0 jadwal</span>
         </div>
         <div id="manageScheduleList"></div>
         <div id="emptyManageSchedule" class="empty-state" style="text-align:center; padding: 20px 0; display: none;">
-          Belum ada jadwal training.
+          Belum ada jadwal Meeting.
         </div>
       </div>
     </div>
@@ -1455,7 +1455,7 @@
 <div class="modal-overlay" id="calendarModal">
   <div class="modal-box">
     <div class="modal-header">
-      <h2 id="calendarModalTitle">Training pada tanggal ini</h2>
+      <h2 id="calendarModalTitle">Meeting pada tanggal ini</h2>
       <button class="modal-close" id="closeCalendarModalBtn">&times;</button>
     </div>
     <div id="calendarModalContent"></div>
@@ -1506,7 +1506,7 @@
           name: 'Soft Skills Workshop',
           date: '2026-08-25',
           time: '10:00',
-          location: 'Training Center',
+          location: 'Meeting Center',
           targetDepts: ['HRD', 'Marketing', 'Sales', 'Finance'],
           attendance: { 'HRD': 5, 'Marketing': 8, 'Sales': 6, 'Finance': 3 }
         });
@@ -1534,10 +1534,10 @@
     const newDeptInput = document.getElementById('newDeptInput');
     const addDeptBtn = document.getElementById('addDeptBtn');
 
-    const trainingName = document.getElementById('trainingName');
-    const trainingDate = document.getElementById('trainingDate');
-    const trainingTime = document.getElementById('trainingTime');
-    const trainingLocation = document.getElementById('trainingLocation');
+    const MeetingName = document.getElementById('MeetingName');
+    const MeetingDate = document.getElementById('MeetingDate');
+    const MeetingTime = document.getElementById('MeetingTime');
+    const MeetingLocation = document.getElementById('MeetingLocation');
     const saveBtn = document.getElementById('saveScheduleBtn');
     const saveBtnText = document.getElementById('saveBtnText');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
@@ -1708,7 +1708,7 @@
 
     // ----- DASHBOARD FUNCTIONS -----
     function updateDashboard() {
-      const totalTraining = schedules.length;
+      const totalMeeting = schedules.length;
       let totalParticipants = 0;
       let deptSet = new Set();
       let totalTarget = 0;
@@ -1728,22 +1728,22 @@
         }
       });
 
-      document.getElementById('totalTraining').textContent = totalTraining;
+      document.getElementById('totalMeeting').textContent = totalMeeting;
       document.getElementById('totalParticipants').textContent = totalParticipants;
       document.getElementById('totalDepartments').textContent = deptSet.size;
       
       const avgAttendance = totalTarget > 0 ? Math.round((totalHadir / totalTarget) * 100) : 0;
       document.getElementById('avgAttendance').textContent = avgAttendance + '%';
 
-      const trainingChart = document.getElementById('trainingChart');
+      const MeetingChart = document.getElementById('MeetingChart');
       if (schedules.length === 0) {
-        trainingChart.innerHTML = '<p style="color:#8899b5; text-align:center; padding:20px;">Belum ada data training</p>';
+        MeetingChart.innerHTML = '<p style="color:#8899b5; text-align:center; padding:20px;">Belum ada data Meeting</p>';
       } else {
         const maxAttendance = Math.max(...schedules.map(s => {
           return Object.values(s.attendance || {}).reduce((a, b) => a + b, 0);
         }), 1);
 
-        trainingChart.innerHTML = schedules.map(s => {
+        MeetingChart.innerHTML = schedules.map(s => {
           const total = Object.values(s.attendance || {}).reduce((a, b) => a + b, 0);
           const percentage = Math.round((total / maxAttendance) * 100);
           const shortName = s.name.length > 15 ? s.name.substring(0, 12) + '...' : s.name;
@@ -1795,7 +1795,7 @@
 
       const tableContainer = document.getElementById('detailTableContainer');
       if (schedules.length === 0) {
-        tableContainer.innerHTML = '<p style="color:#8899b5; text-align:center; padding:20px;">Belum ada data training</p>';
+        tableContainer.innerHTML = '<p style="color:#8899b5; text-align:center; padding:20px;">Belum ada data Meeting</p>';
         return;
       }
 
@@ -1803,7 +1803,7 @@
       let tableHtml = `<table>
         <thead>
           <tr>
-            <th>Training</th>
+            <th>Meeting</th>
             <th>Tanggal</th>`;
       
       allDepts.forEach(d => {
@@ -1922,7 +1922,7 @@
 
     function openCalendarModal(date, events) {
       const formattedDate = formatDate(date);
-      calendarModalTitle.textContent = `Training pada ${formattedDate}`;
+      calendarModalTitle.textContent = `Meeting pada ${formattedDate}`;
       
       let content = '';
       events.forEach((s) => {
@@ -2144,20 +2144,20 @@
       currentEditId = id;
       editScheduleId.value = id;
       
-      trainingName.value = schedule.name;
-      trainingDate.value = schedule.date;
-      trainingTime.value = schedule.time;
-      trainingLocation.value = schedule.location;
+      MeetingName.value = schedule.name;
+      MeetingDate.value = schedule.date;
+      MeetingTime.value = schedule.time;
+      MeetingLocation.value = schedule.location;
       
       document.querySelectorAll('.dept-checkbox').forEach(cb => {
         cb.checked = schedule.targetDepts.includes(cb.value);
       });
       
-      formTitle.innerHTML = '<i class="fas fa-edit"></i> Edit Jadwal Training';
+      formTitle.innerHTML = '<i class="fas fa-edit"></i> Edit Jadwal Meeting';
       saveBtnText.textContent = 'Update Jadwal';
       cancelEditBtn.style.display = 'inline-flex';
       
-      document.getElementById('trainingForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById('MeetingForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
 
     window.deleteSchedule = function(id) {
@@ -2171,17 +2171,17 @@
     function cancelEdit() {
       currentEditId = null;
       editScheduleId.value = '';
-      formTitle.innerHTML = '<i class="fas fa-plus-circle"></i> Buat Jadwal Training Baru';
+      formTitle.innerHTML = '<i class="fas fa-plus-circle"></i> Buat Jadwal Meeting Baru';
       saveBtnText.textContent = 'Simpan Jadwal';
       cancelEditBtn.style.display = 'none';
       resetForm();
     }
 
     function resetForm() {
-      trainingName.value = '';
-      trainingDate.value = '';
-      trainingTime.value = '09:00';
-      trainingLocation.value = '';
+      MeetingName.value = '';
+      MeetingDate.value = '';
+      MeetingTime.value = '09:00';
+      MeetingLocation.value = '';
       document.querySelectorAll('.dept-checkbox').forEach(cb => cb.checked = false);
     }
 
@@ -2212,12 +2212,12 @@
 
     // ----- simpan / update jadwal -----
     saveBtn.addEventListener('click', function() {
-      const name = trainingName.value.trim();
-      const date = trainingDate.value;
-      const time = trainingTime.value;
-      const location = trainingLocation.value.trim();
+      const name = MeetingName.value.trim();
+      const date = MeetingDate.value;
+      const time = MeetingTime.value;
+      const location = MeetingLocation.value.trim();
       if (!name || !date || !time || !location) {
-        showToast('⚠️ Lengkapi semua field training.');
+        showToast('⚠️ Lengkapi semua field Meeting.');
         return;
       }
       const checkboxes = document.querySelectorAll('.dept-checkbox:checked');
@@ -2264,7 +2264,7 @@
           attendance: attendance
         };
         schedules.push(newSchedule);
-        showToast('✅ Jadwal training berhasil disimpan!');
+        showToast('✅ Jadwal Meeting berhasil disimpan!');
       }
       
       cancelEdit();
@@ -2334,8 +2334,8 @@
     renderAll();
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    trainingDate.value = tomorrow.toISOString().split('T')[0];
-    trainingTime.value = '09:00';
+    MeetingDate.value = tomorrow.toISOString().split('T')[0];
+    MeetingTime.value = '09:00';
     resetForm();
 
     switchPage('dashboard');
