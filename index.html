@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+  <title>Digitalisasi Absensi Training</title>
+  <!-- Font & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+    body {
+      background: #f4f7fc;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    .app {
+      max-width: 1400px;
+      width: 100%;
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 20px 40px -12px rgba(0,20,30,0.25);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: fit-content;
+      min-height: 90vh;
+    }
+
+    /* header */
+    .header {
+      padding: 24px 32px;
+      background: white;
+      border-bottom: 1px solid #e9edf4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: relative;
+    }
+    /* Area untuk klik 3x (pojok kanan atas) */
+    .secret-click-area {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 80px;
+      height: 80px;
+      cursor: default;
+      z-index: 10;
+      background: transparent;
+    }
+    .logo h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0b2b4a;
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+    }
+    .logo span {
+      color: #2a7de1;
+    }
+    .logo small {
+      font-weight: 400;
+      font-size: 14px;
+      color: #5e6f8d;
+      margin-left: 8px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .lock-icon {
+      font-size: 18px;
+      color: #8899b5;
+      cursor: pointer;
+      transition: 0.15s;
+      padding: 6px 10px;
+      border-radius: 40px;
+      background: #f0f3fa;
+    }
+    .lock-icon:hover {
+      background: #e3e8f0;
+      color: #2a7de1;
+    }
+    .lock-icon.unlocked {
+      color: #0f7b4f;
+      background: #e6f5ed;
+    }
+
+    /* navigasi */
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      background: #f0f3fa;
+      padding: 6px;
+      border-radius: 60px;
+      flex-wrap: wrap;
+    }
+    .nav-tab {
+      border: none;
+      background: transparent;
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 15px;
+      color: #2c3e58;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .nav-tab i {
+      font-size: 16px;
+    }
+    .nav-tab.active {
+      background: white;
+      box-shadow: 0 4px 8px rgba(0,20,40,0.06);
+      color: #0b2b4a;
+    }
+    .nav-tab:hover:not(.active) {
+      background: rgba(255,255,255,0.5);
+    }
+    /* Hanya Absensi Training dan Management yang disembunyikan */
+    .nav-tab.hidden-tab {
+      display: none;
+    }
+    .nav-tab.hidden-tab.visible {
+      display: inline-flex;
+    }
+    /* Kalender tetap terlihat */
+    .nav-tab.calendar-tab {
+      display: inline-flex;
+    }
+
+    /* main content */
+    .content {
+      padding: 32px;
+      background: #fafcff;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* page */
+    .page {
+      display: none;
+      animation: fade 0.25s ease;
+    }
+    .page.active {
+      display: block;
+    }
+    @keyframes fade {
+      0% { opacity: 0.5; transform: translateY(4px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* card & grid */
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      border: 1px solid #eef3f9;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .card-header h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1b2b44;
+      word-wrap: break-word;
+    }
+    .badge {
+      background: #eef5ff;
+      color: #1f5fbe;
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Dashboard Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #f8faff;
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid #e9eff6;
+      text-align: center;
+      word-wrap: break-word;
+    }
+    .stat-card .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #0b2b4a;
+      line-height: 1.2;
+    }
+    .stat-card .stat-label {
+      font-size: 14px;
+      color: #5e7395;
+      margin-top: 4px;
+      word-wrap: break-word;
+    }
+    .stat-card .stat-icon {
+      font-size: 24px;
+      color: #2a7de1;
+      margin-bottom: 8px;
+    }
+    .stat-card.primary .stat-icon { color: #2a7de1; }
+    .stat-card.success .stat-icon { color: #0f7b4f; }
+    .stat-card.warning .stat-icon { color: #e67e22; }
+    .stat-card.info .stat-icon { color: #1a7a8a; }
+
+    /* Dashboard Charts */
+    .chart-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 16px;
+    }
+    .chart-box {
+      background: #fafcff;
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid #eef3f9;
+      overflow: hidden;
+    }
+    .chart-box h4 {
+      font-size: 15px;
+      color: #1b3552;
+      margin-bottom: 16px;
+      font-weight: 600;
+      word-wrap: break-word;
+    }
+    .chart-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chart-bar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .chart-bar-item .label {
+      min-width: 80px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #2c4a6e;
+      word-wrap: break-word;
+      flex-shrink: 0;
+    }
+    .chart-bar-item .bar-track {
+      flex: 1;
+      min-width: 60px;
+      height: 24px;
+      background: #e9eff6;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .chart-bar-item .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2a7de1, #5b9cf5);
+      border-radius: 12px;
+      transition: width 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      min-width: 30px;
+      white-space: nowrap;
+    }
+    .chart-bar-item .bar-fill.success { background: linear-gradient(90deg, #0f7b4f, #27ae60); }
+    .chart-bar-item .bar-fill.warning { background: linear-gradient(90deg, #d35400, #e67e22); }
+    .chart-bar-item .bar-fill.info { background: linear-gradient(90deg, #1a7a8a, #3498db); }
+
+    .chart-pie {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+    .pie-visual {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .pie-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pie-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #1f3a5a;
+      word-wrap: break-word;
+    }
+    .pie-legend-item .color-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    /* CALENDAR */
+    .calendar-container {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: #f8faff;
+      border-bottom: 1px solid #eef3f9;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .calendar-header .month-year {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0b2b4a;
+      word-wrap: break-word;
+    }
+    .calendar-nav-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #2a7de1;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 40px;
+      transition: 0.15s;
+      flex-shrink: 0;
+    }
+    .calendar-nav-btn:hover {
+      background: #eef5ff;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: #eef3f9;
+      overflow: hidden;
+    }
+    .calendar-day-header {
+      background: #f8faff;
+      padding: 12px;
+      text-align: center;
+      font-weight: 700;
+      color: #476085;
+      font-size: 13px;
+      word-wrap: break-word;
+    }
+    .calendar-day {
+      background: white;
+      min-height: 100px;
+      padding: 8px;
+      cursor: pointer;
+      transition: 0.15s;
+      position: relative;
+      word-wrap: break-word;
+      overflow: hidden;
+    }
+    .calendar-day:hover {
+      background: #f5f9ff;
+    }
+    .calendar-day .day-number {
+      font-weight: 600;
+      color: #1b3552;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .calendar-day .day-number.other-month {
+      color: #b0c0d5;
+    }
+    .calendar-day .event-item {
+      background: #eef5ff;
+      border-radius: 12px;
+      padding: 4px 8px;
+      margin-bottom: 3px;
+      font-size: 11px;
+      color: #1f5fbe;
+      font-weight: 500;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      border-left: 3px solid #2a7de1;
+      line-height: 1.3;
+    }
+    .calendar-day .event-item .dept-count {
+      background: #2a7de1;
+      color: white;
+      border-radius: 30px;
+      padding: 0 6px;
+      font-size: 10px;
+      margin-left: 4px;
+      white-space: nowrap;
+    }
+    .calendar-day .event-more {
+      font-size: 11px;
+      color: #8899b5;
+      font-weight: 500;
+      padding: 2px 8px;
+    }
+    .calendar-day.today {
+      background: #f0f7ff;
+      border: 2px solid #2a7de1;
+    }
+    .calendar-day.has-event {
+      cursor: pointer;
+    }
+    .calendar-day.has-event:hover {
+      background: #e8f0fe;
+    }
+
+    /* schedule card */
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .schedule-card {
+      background: #f9fbfe;
+      border: 1px solid #e3eaf2;
+      border-radius: 20px;
+      padding: 18px 20px;
+      transition: all 0.15s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+      cursor: pointer;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .schedule-card:hover {
+      background: white;
+      border-color: #b8cde0;
+      box-shadow: 0 8px 18px rgba(30,60,120,0.06);
+      transform: translateY(-2px);
+    }
+    .schedule-card .title {
+      font-weight: 700;
+      font-size: 18px;
+      color: #0b2b4a;
+      margin-bottom: 6px;
+      word-wrap: break-word;
+    }
+    .schedule-card .meta {
+      font-size: 14px;
+      color: #476085;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 8px 0 12px;
+      word-wrap: break-word;
+    }
+    .schedule-card .meta i {
+      width: 18px;
+      color: #2a7de1;
+      flex-shrink: 0;
+    }
+    .schedule-card .dept-target {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 8px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+    }
+    .dept-tag {
+      background: #e6edf8;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #1f4d7a;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      word-wrap: break-word;
+      flex-wrap: wrap;
+    }
+    .dept-tag .count {
+      background: #2a7de1;
+      color: white;
+      border-radius: 30px;
+      padding: 0 8px;
+      font-size: 11px;
+      min-width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .dept-tag.hadir .count {
+      background: #0f7b4f;
+    }
+    .schedule-card .footer-card {
+      margin-top: 14px;
+      border-top: 1px dashed #dce3ed;
+      padding-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #34557b;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .schedule-card .click-hint {
+      text-align: center;
+      font-size: 12px;
+      color: #8899b5;
+      margin-top: 8px;
+      border-top: 1px dashed #e9eff6;
+      padding-top: 8px;
+      word-wrap: break-word;
+    }
+
+    /* modal absensi */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 20px;
+    }
+    .modal-overlay.show {
+      display: flex;
+    }
+    .modal-box {
+      background: white;
+      max-width: 560px;
+      width: 100%;
+      border-radius: 32px;
+      padding: 32px 36px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+      animation: fade 0.2s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+      word-wrap: break-word;
+    }
+    .modal-box .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      gap: 16px;
+    }
+    .modal-box h2 {
+      font-size: 22px;
+      color: #0b2b4a;
+      word-wrap: break-word;
+    }
+    .modal-box .sub {
+      color: #5d7397;
+      margin-bottom: 20px;
+      font-size: 14px;
+      word-wrap: break-word;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #8899b5;
+      cursor: pointer;
+      padding: 0 8px;
+      transition: 0.15s;
+      flex-shrink: 0;
+    }
+    .modal-close:hover {
+      color: #e74c3c;
+      transform: rotate(90deg);
+    }
+    .modal-dept-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 16px 0 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .modal-dept-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f5f9ff;
+      padding: 12px 16px;
+      border-radius: 16px;
+      border-left: 4px solid #2a7de1;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .modal-dept-item .dept-name {
+      font-weight: 600;
+      color: #0e2844;
+      min-width: 100px;
+      word-wrap: break-word;
+      flex: 1;
+    }
+    .modal-dept-item .dept-input-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .modal-dept-item .dept-input-group input[type="number"] {
+      width: 60px;
+      padding: 6px 10px;
+      border: 1px solid #d0dae8;
+      border-radius: 30px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 15px;
+      background: white;
+      flex-shrink: 0;
+    }
+    .modal-dept-item .dept-input-group input[type="number"]:focus {
+      outline: none;
+      border-color: #2a7de1;
+      box-shadow: 0 0 0 3px rgba(42,125,225,0.15);
+    }
+    .modal-dept-item .btn-update-modal {
+      background: #2a7de1;
+      color: white;
+      border: none;
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.15s;
+      flex-shrink: 0;
+    }
+    .modal-dept-item .btn-update-modal:hover {
+      background: #1a5fb0;
+      transform: scale(1.03);
+    }
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      border-top: 1px solid #eef3f9;
+      padding-top: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-close-modal {
+      background: #eef2f7;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 60px;
+      font-weight: 600;
+      color: #1d3d64;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .btn-close-modal:hover {
+      background: #dbe3ef;
+    }
+    .btn-save-all {
+      background: #0b2b4a;
+      color: white;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .btn-save-all:hover {
+      background: #1a3f62;
+    }
+
+    /* Password Modal */
+    .password-modal .modal-box {
+      max-width: 420px;
+    }
+    .password-modal .modal-box .password-input-group {
+      display: flex;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .password-modal .modal-box .password-input-group input {
+      flex: 1;
+      padding: 12px 18px;
+      border: 1px solid #d6e0ed;
+      border-radius: 60px;
+      font-size: 16px;
+      min-width: 150px;
+    }
+    .password-modal .modal-box .password-input-group input:focus {
+      outline: none;
+      border-color: #2a7de1;
+      box-shadow: 0 0 0 3px rgba(42,125,225,0.15);
+    }
+    .password-modal .modal-box .password-error {
+      color: #e74c3c;
+      font-size: 14px;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .password-modal .modal-box .password-error.show {
+      display: block;
+    }
+    .btn-password {
+      background: #0b2b4a;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .btn-password:hover {
+      background: #1a3f62;
+    }
+    .btn-password-secondary {
+      background: #eef2f7;
+      color: #1d3d64;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .btn-password-secondary:hover {
+      background: #dbe3ef;
+    }
+
+    /* management form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #1b3552;
+      margin-bottom: 6px;
+      font-size: 14px;
+      word-wrap: break-word;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #d6e0ed;
+      border-radius: 60px;
+      font-size: 15px;
+      background: white;
+      transition: 0.15s;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #2a7de1;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(42,125,225,0.15);
+    }
+    .checkbox-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 24px;
+      background: #f5f9ff;
+      padding: 16px 20px;
+      border-radius: 24px;
+      border: 1px solid #dfe9f3;
+    }
+    .checkbox-grid label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      color: #1f3a5a;
+      cursor: pointer;
+      word-wrap: break-word;
+    }
+    .checkbox-grid input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #1f5fbe;
+      flex-shrink: 0;
+    }
+    .btn-submit {
+      background: #0b2b4a;
+      color: white;
+      border: none;
+      padding: 14px 36px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      white-space: nowrap;
+    }
+    .btn-submit:hover {
+      background: #1a3f62;
+      transform: scale(1.01);
+    }
+    .btn-secondary {
+      background: #eef2f7;
+      color: #1f3a5a;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .btn-secondary:hover {
+      background: #dce3ed;
+    }
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+    .dept-manage-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      padding: 8px 0;
+      align-items: center;
+    }
+    .dept-pill {
+      background: white;
+      border: 1px solid #dce3ed;
+      padding: 6px 16px 6px 14px;
+      border-radius: 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #153455;
+      transition: 0.15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      word-wrap: break-word;
+    }
+    .dept-pill:hover {
+      border-color: #b0c4db;
+      background: #fafcff;
+    }
+    .dept-pill .del {
+      color: #b22234;
+      cursor: pointer;
+      font-weight: 700;
+      opacity: 0.5;
+      transition: 0.15s;
+      font-size: 15px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .dept-pill .del:hover {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+    .empty-state {
+      color: #6a7f9f;
+      font-style: italic;
+      padding: 12px 0;
+      text-align: center;
+      word-wrap: break-word;
+    }
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #0b2b4a;
+      color: white;
+      padding: 14px 28px;
+      border-radius: 60px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      font-weight: 500;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: 0.3s;
+      max-width: 90%;
+      word-wrap: break-word;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* management jadwal list */
+    .schedule-manage-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      background: #f9fbfe;
+      border-radius: 16px;
+      border: 1px solid #eef3f9;
+      margin-bottom: 10px;
+      transition: 0.15s;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .schedule-manage-item:hover {
+      background: #f5f9ff;
+      border-color: #d0dae8;
+    }
+    .schedule-manage-item .info {
+      flex: 1;
+      min-width: 150px;
+    }
+    .schedule-manage-item .info .name {
+      font-weight: 600;
+      color: #0b2b4a;
+      word-wrap: break-word;
+    }
+    .schedule-manage-item .info .detail {
+      font-size: 13px;
+      color: #5e7395;
+      margin-top: 2px;
+      word-wrap: break-word;
+    }
+    .schedule-manage-item .info .dept-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 8px;
+      margin-top: 4px;
+    }
+    .schedule-manage-item .info .dept-list .mini-tag {
+      background: #e6edf8;
+      padding: 2px 10px;
+      border-radius: 30px;
+      font-size: 11px;
+      color: #1f4d7a;
+      word-wrap: break-word;
+    }
+    .schedule-manage-item .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .schedule-manage-item .actions button {
+      padding: 6px 16px;
+      border-radius: 30px;
+      border: none;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .btn-edit {
+      background: #eef5ff;
+      color: #1f5fbe;
+    }
+    .btn-edit:hover {
+      background: #dce7f5;
+    }
+    .btn-delete {
+      background: #fee9e7;
+      color: #c0392b;
+    }
+    .btn-delete:hover {
+      background: #fdd5d2;
+    }
+
+    /* Department Management */
+    .dept-management-wrapper {
+      background: #f8faff;
+      border-radius: 20px;
+      padding: 20px 24px;
+      border: 1px solid #eef3f9;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .dept-management-wrapper .dept-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .dept-management-wrapper .dept-header .title {
+      font-weight: 700;
+      color: #0b2b4a;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      word-wrap: break-word;
+    }
+    .dept-management-wrapper .dept-header .title i {
+      color: #2a7de1;
+      flex-shrink: 0;
+    }
+    .dept-management-wrapper .dept-header .dept-count-badge {
+      background: #eef5ff;
+      color: #1f5fbe;
+      padding: 4px 14px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .dept-management-wrapper .dept-list-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      padding: 12px 0;
+      min-height: 48px;
+      align-items: center;
+    }
+    .dept-management-wrapper .dept-list-container .empty-dept {
+      color: #8899b5;
+      font-style: italic;
+      font-size: 14px;
+      word-wrap: break-word;
+    }
+    .dept-management-wrapper .add-dept-section {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 16px;
+      border-top: 1px solid #e9eff6;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .dept-management-wrapper .add-dept-section .input-wrapper {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+    .dept-management-wrapper .add-dept-section .input-wrapper input {
+      width: 100%;
+      padding: 10px 18px;
+      border: 1px solid #d6e0ed;
+      border-radius: 60px;
+      font-size: 14px;
+      background: white;
+      transition: 0.15s;
+    }
+    .dept-management-wrapper .add-dept-section .input-wrapper input:focus {
+      outline: none;
+      border-color: #2a7de1;
+      box-shadow: 0 0 0 3px rgba(42,125,225,0.15);
+    }
+    .dept-management-wrapper .add-dept-section .input-wrapper input::placeholder {
+      color: #a0b2c9;
+    }
+    .dept-management-wrapper .add-dept-section .btn-add-dept {
+      background: #0b2b4a;
+      color: white;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .dept-management-wrapper .add-dept-section .btn-add-dept:hover {
+      background: #1a3f62;
+      transform: scale(1.02);
+    }
+
+    /* Table detail */
+    #detailTableContainer {
+      overflow-x: auto;
+      width: 100%;
+    }
+    #detailTableContainer table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      min-width: 500px;
+    }
+    #detailTableContainer table th,
+    #detailTableContainer table td {
+      padding: 10px 16px;
+      text-align: left;
+      word-wrap: break-word;
+      border-bottom: 1px solid #eef3f9;
+    }
+    #detailTableContainer table th {
+      background: #f0f5ff;
+      color: #1b3552;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    #detailTableContainer table td {
+      color: #1f3a5a;
+    }
+
+    @media (max-width: 992px) {
+      .chart-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .modal-box {
+        padding: 24px 20px;
+      }
+      .modal-dept-item {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .modal-dept-item .dept-name {
+        min-width: 70px;
+      }
+      .calendar-day {
+        min-height: 60px;
+        padding: 4px;
+      }
+      .calendar-day .event-item {
+        font-size: 9px;
+        padding: 2px 4px;
+      }
+      .dept-management-wrapper {
+        padding: 16px;
+      }
+      .dept-management-wrapper .add-dept-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .dept-management-wrapper .add-dept-section .btn-add-dept {
+        justify-content: center;
+      }
+      .schedule-manage-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .schedule-manage-item .actions {
+        justify-content: flex-end;
+      }
+      #detailTableContainer table {
+        font-size: 12px;
+        min-width: 400px;
+      }
+      #detailTableContainer table th,
+      #detailTableContainer table td {
+        padding: 6px 10px;
+      }
+    }
+    @media (max-width: 640px) {
+      .header { flex-direction: column; align-items: flex-start; }
+      .nav-tabs { width: 100%; justify-content: space-around; }
+      .nav-tab { font-size: 13px; padding: 8px 12px; white-space: nowrap; }
+      .content { padding: 16px; }
+      .schedule-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .calendar-day { min-height: 50px; }
+      .calendar-day .day-number { font-size: 12px; }
+      .calendar-day .event-item { font-size: 9px; padding: 2px 4px; }
+      .calendar-day .event-more { font-size: 9px; }
+      .modal-box { padding: 20px 16px; }
+      .btn-submit, .btn-secondary, .btn-danger { white-space: normal; }
+      #detailTableContainer table {
+        font-size: 11px;
+        min-width: 300px;
+      }
+      #detailTableContainer table th,
+      #detailTableContainer table td {
+        padding: 4px 8px;
+      }
+      .secret-click-area {
+        width: 60px;
+        height: 60px;
+      }
+    }
+    @media (max-width: 400px) {
+      .nav-tab { font-size: 11px; padding: 6px 10px; }
+      .logo h1 { font-size: 18px; white-space: normal; }
+      .logo small { display: block; margin-left: 0; }
+      .schedule-card { padding: 14px; }
+      .dept-management-wrapper { padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- header -->
+  <div class="header">
+    <div class="logo">
+      <h1><i class="fas fa-clipboard-check" style="color:#2a7de1;"></i> Train<span>Ab</span> <small>digital absensi</small></h1>
+    </div>
+    <div class="header-right">
+      <span class="lock-icon" id="lockIcon" title="Klik untuk unlock menu"><i class="fas fa-lock"></i></span>
+      <div class="nav-tabs" id="navTabs">
+        <button class="nav-tab active" data-page="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</button>
+        <button class="nav-tab calendar-tab" data-page="calendar"><i class="fas fa-calendar-alt"></i> Kalender</button>
+        <button class="nav-tab hidden-tab" data-page="absensi"><i class="fas fa-calendar-check"></i> Absensi Training</button>
+        <button class="nav-tab hidden-tab" data-page="management"><i class="fas fa-sliders-h"></i> Management</button>
+      </div>
+    </div>
+    <!-- Area untuk klik 3x -->
+    <div class="secret-click-area" id="secretClickArea"></div>
+  </div>
+
+  <!-- content -->
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div id="page-dashboard" class="page active">
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card primary">
+          <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+          <div class="stat-number" id="totalTraining">0</div>
+          <div class="stat-label">Total Training</div>
+        </div>
+        <div class="stat-card success">
+          <div class="stat-icon"><i class="fas fa-users"></i></div>
+          <div class="stat-number" id="totalParticipants">0</div>
+          <div class="stat-label">Total Peserta Hadir</div>
+        </div>
+        <div class="stat-card warning">
+          <div class="stat-icon"><i class="fas fa-building"></i></div>
+          <div class="stat-number" id="totalDepartments">0</div>
+          <div class="stat-label">Departemen Terlibat</div>
+        </div>
+        <div class="stat-card info">
+          <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+          <div class="stat-number" id="avgAttendance">0%</div>
+          <div class="stat-label">Rata-rata Kehadiran</div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-box">
+          <h4><i class="fas fa-chart-bar" style="color:#2a7de1;"></i> Kehadiran per Training</h4>
+          <div class="chart-bar" id="trainingChart"></div>
+        </div>
+        <div class="chart-box">
+          <h4><i class="fas fa-chart-pie" style="color:#2a7de1;"></i> Distribusi Kehadiran per Departemen</h4>
+          <div class="chart-pie" id="deptChart">
+            <div class="pie-visual" id="pieVisual"></div>
+            <div class="pie-legend" id="pieLegend"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 8px;">
+        <div class="card-header">
+          <h3><i class="fas fa-table" style="color:#2a7de1;"></i> Detail Kehadiran per Training</h3>
+        </div>
+        <div id="detailTableContainer"></div>
+      </div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div id="page-calendar" class="page">
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fas fa-calendar-alt" style="color:#2a7de1;"></i> Kalender Training</h3>
+          <span class="badge" id="calendarBadge">Lihat jadwal</span>
+        </div>
+        <div class="calendar-container">
+          <div class="calendar-header">
+            <button class="calendar-nav-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+            <span class="month-year" id="currentMonthYear">August 2026</span>
+            <button class="calendar-nav-btn" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <!-- akan di render oleh js -->
+          </div>
+        </div>
+        <div style="margin-top: 16px; padding: 12px 16px; background: #f5f9ff; border-radius: 16px; font-size: 13px; color: #476085; word-wrap: break-word;">
+          <i class="fas fa-info-circle" style="color:#2a7de1;"></i> 
+          Klik tanggal dengan event untuk melihat detail training. Warna biru pada event menandakan training, angka menunjukkan jumlah departemen target.
+        </div>
+      </div>
+    </div>
+
+    <!-- ABSENSI TRAINING -->
+    <div id="page-absensi" class="page">
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fas fa-calendar-alt" style="color:#2a7de1;"></i> Jadwal Training & Kehadiran</h3>
+          <span class="badge" id="totalScheduleBadge">0 jadwal</span>
+        </div>
+        <div id="scheduleList" class="schedule-grid"></div>
+        <div id="emptySchedule" class="empty-state" style="text-align:center; padding: 36px 0; display: none;">
+          <i class="fas fa-calendar-plus" style="font-size: 32px; color:#b0c7df;"></i>
+          <p style="margin-top: 12px;">Belum ada jadwal training. Buat di menu Management.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANAGEMENT -->
+    <div id="page-management" class="page">
+      <div class="card">
+        <div class="card-header"><h3><i class="fas fa-cog" style="color:#2a7de1;"></i> Management Training</h3></div>
+        
+        <!-- Department Management -->
+        <div class="dept-management-wrapper">
+          <div class="dept-header">
+            <div class="title">
+              <i class="fas fa-building"></i> Daftar Departemen
+            </div>
+            <span class="dept-count-badge" id="deptCountBadge">0 departemen</span>
+          </div>
+          <div class="dept-list-container" id="deptListContainer">
+            <!-- akan di render oleh js -->
+          </div>
+          <div class="add-dept-section">
+            <div class="input-wrapper">
+              <input type="text" id="newDeptInput" placeholder="Masukkan nama departemen baru...">
+            </div>
+            <button class="btn-add-dept" id="addDeptBtn">
+              <i class="fas fa-plus"></i> Tambah Departemen
+            </button>
+          </div>
+        </div>
+
+        <!-- Form untuk tambah / edit -->
+        <h4 style="margin: 16px 0 12px; color:#1f3a5a; word-wrap: break-word;" id="formTitle"><i class="fas fa-plus-circle"></i> Buat Jadwal Training Baru</h4>
+        <div id="trainingForm">
+          <input type="hidden" id="editScheduleId" value="">
+          <div class="form-group">
+            <label>Nama Training</label>
+            <input type="text" id="trainingName" placeholder="Misal: Leadership Bootcamp">
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label>Tanggal</label>
+              <input type="date" id="trainingDate">
+            </div>
+            <div class="form-group">
+              <label>Jam</label>
+              <input type="time" id="trainingTime" value="09:00">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Lokasi</label>
+            <input type="text" id="trainingLocation" placeholder="Ruangan / Online">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-users"></i> Target departemen hadir (checkbox)</label>
+            <div id="deptCheckboxContainer" class="checkbox-grid">
+              <!-- akan di render oleh js -->
+            </div>
+          </div>
+          <div style="display:flex; gap:12px; margin-top: 8px; flex-wrap:wrap;">
+            <button class="btn-submit" id="saveScheduleBtn"><i class="fas fa-save"></i> <span id="saveBtnText">Simpan Jadwal</span></button>
+            <button class="btn-secondary" id="cancelEditBtn" style="display:none;"><i class="fas fa-times"></i> Batal Edit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daftar Jadwal yang sudah dibuat -->
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fas fa-list"></i> Daftar Jadwal Training</h3>
+          <span class="badge" id="manageListBadge">0 jadwal</span>
+        </div>
+        <div id="manageScheduleList"></div>
+        <div id="emptyManageSchedule" class="empty-state" style="text-align:center; padding: 20px 0; display: none;">
+          Belum ada jadwal training.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PASSWORD -->
+<div class="modal-overlay password-modal" id="passwordModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><i class="fas fa-lock" style="color:#2a7de1;"></i> Verifikasi Akses</h2>
+      <button class="modal-close" id="closePasswordModalBtn">&times;</button>
+    </div>
+    <div class="sub">Masukkan password untuk mengakses menu yang disembunyikan</div>
+    <div class="password-error" id="passwordError">⚠️ Password salah! Silakan coba lagi.</div>
+    <div class="password-input-group">
+      <input type="password" id="passwordInput" placeholder="Masukkan password..." autofocus>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-password-secondary" id="cancelPasswordBtn">Batal</button>
+      <button class="btn-password" id="submitPasswordBtn"><i class="fas fa-check"></i> Verifikasi</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ABSENSI -->
+<div class="modal-overlay" id="attendanceModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="modalTitle">Detail Kehadiran</h2>
+      <button class="modal-close" id="closeModalBtn">&times;</button>
+    </div>
+    <div class="sub" id="modalSub">Update jumlah hadir per departemen</div>
+    <div id="modalDeptList" class="modal-dept-list"></div>
+    <div class="modal-footer">
+      <button class="btn-close-modal" id="closeModalFooterBtn">Tutup</button>
+      <button class="btn-save-all" id="saveAllModalBtn"><i class="fas fa-save"></i> Simpan Semua</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CALENDAR DETAIL -->
+<div class="modal-overlay" id="calendarModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="calendarModalTitle">Training pada tanggal ini</h2>
+      <button class="modal-close" id="closeCalendarModalBtn">&times;</button>
+    </div>
+    <div id="calendarModalContent"></div>
+    <div class="modal-footer">
+      <button class="btn-close-modal" id="closeCalendarModalFooterBtn">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div id="toast" class="toast"></div>
+
+<script>
+  (function() {
+    // ----- data awal -----
+    let departments = ['HRD', 'Engineering', 'Marketing', 'Finance', 'Sales', 'Operations'];
+    let schedules = [];
+    let currentEditId = null;
+    let isUnlocked = false;
+    let clickCount = 0;
+    let clickTimer = null;
+
+    // Password yang benar
+    const CORRECT_PASSWORD = 'admin123';
+
+    function initSample() {
+      if (schedules.length === 0) {
+        schedules.push({
+          id: Date.now() + 1,
+          name: 'Leadership Bootcamp',
+          date: '2026-08-15',
+          time: '09:00',
+          location: 'Meeting Room A',
+          targetDepts: ['HRD', 'Engineering', 'Marketing'],
+          attendance: { 'HRD': 8, 'Engineering': 12, 'Marketing': 6 } 
+        });
+        schedules.push({
+          id: Date.now() + 2,
+          name: 'Technical Sprint',
+          date: '2026-08-20',
+          time: '13:30',
+          location: 'Lab 2',
+          targetDepts: ['Engineering', 'Finance', 'Operations'],
+          attendance: { 'Engineering': 10, 'Finance': 4, 'Operations': 7 }
+        });
+        schedules.push({
+          id: Date.now() + 3,
+          name: 'Soft Skills Workshop',
+          date: '2026-08-25',
+          time: '10:00',
+          location: 'Training Center',
+          targetDepts: ['HRD', 'Marketing', 'Sales', 'Finance'],
+          attendance: { 'HRD': 5, 'Marketing': 8, 'Sales': 6, 'Finance': 3 }
+        });
+        schedules.push({
+          id: Date.now() + 4,
+          name: 'Agile Methodology',
+          date: '2026-09-01',
+          time: '14:00',
+          location: 'Online',
+          targetDepts: ['Engineering', 'Operations', 'Sales'],
+          attendance: { 'Engineering': 15, 'Operations': 5, 'Sales': 4 }
+        });
+      }
+    }
+    initSample();
+
+    // ----- DOM refs -----
+    const scheduleListEl = document.getElementById('scheduleList');
+    const emptyScheduleEl = document.getElementById('emptySchedule');
+    const totalBadge = document.getElementById('totalScheduleBadge');
+
+    const deptListContainer = document.getElementById('deptListContainer');
+    const deptCheckboxContainer = document.getElementById('deptCheckboxContainer');
+    const deptCountBadge = document.getElementById('deptCountBadge');
+    const newDeptInput = document.getElementById('newDeptInput');
+    const addDeptBtn = document.getElementById('addDeptBtn');
+
+    const trainingName = document.getElementById('trainingName');
+    const trainingDate = document.getElementById('trainingDate');
+    const trainingTime = document.getElementById('trainingTime');
+    const trainingLocation = document.getElementById('trainingLocation');
+    const saveBtn = document.getElementById('saveScheduleBtn');
+    const saveBtnText = document.getElementById('saveBtnText');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const editScheduleId = document.getElementById('editScheduleId');
+    const formTitle = document.getElementById('formTitle');
+    const manageScheduleList = document.getElementById('manageScheduleList');
+    const emptyManageSchedule = document.getElementById('emptyManageSchedule');
+    const manageListBadge = document.getElementById('manageListBadge');
+
+    // modal absensi
+    const modalOverlay = document.getElementById('attendanceModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalSub = document.getElementById('modalSub');
+    const modalDeptList = document.getElementById('modalDeptList');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const closeModalFooterBtn = document.getElementById('closeModalFooterBtn');
+    const saveAllModalBtn = document.getElementById('saveAllModalBtn');
+
+    // password modal
+    const passwordModal = document.getElementById('passwordModal');
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordError = document.getElementById('passwordError');
+    const submitPasswordBtn = document.getElementById('submitPasswordBtn');
+    const cancelPasswordBtn = document.getElementById('cancelPasswordBtn');
+    const closePasswordModalBtn = document.getElementById('closePasswordModalBtn');
+
+    // lock icon
+    const lockIcon = document.getElementById('lockIcon');
+    const secretClickArea = document.getElementById('secretClickArea');
+
+    // calendar
+    const calendarGrid = document.getElementById('calendarGrid');
+    const currentMonthYear = document.getElementById('currentMonthYear');
+    const prevMonthBtn = document.getElementById('prevMonth');
+    const nextMonthBtn = document.getElementById('nextMonth');
+    const calendarBadge = document.getElementById('calendarBadge');
+    const calendarModal = document.getElementById('calendarModal');
+    const calendarModalTitle = document.getElementById('calendarModalTitle');
+    const calendarModalContent = document.getElementById('calendarModalContent');
+    const closeCalendarModalBtn = document.getElementById('closeCalendarModalBtn');
+    const closeCalendarModalFooterBtn = document.getElementById('closeCalendarModalFooterBtn');
+
+    // toast
+    const toast = document.getElementById('toast');
+
+    // navigasi
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const hiddenTabs = document.querySelectorAll('.hidden-tab');
+    const pages = {
+      dashboard: document.getElementById('page-dashboard'),
+      absensi: document.getElementById('page-absensi'),
+      calendar: document.getElementById('page-calendar'),
+      management: document.getElementById('page-management')
+    };
+
+    // ----- state untuk modal -----
+    let currentModalScheduleId = null;
+    let modalTempData = {};
+    let calendarCurrentDate = new Date();
+
+    // ----- helper functions -----
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function generateId() {
+      return Date.now() + Math.floor(Math.random() * 1000);
+    }
+
+    // ----- UNLOCK / LOCK FUNCTIONS -----
+    function unlockMenu() {
+      isUnlocked = true;
+      hiddenTabs.forEach(tab => tab.classList.add('visible'));
+      lockIcon.innerHTML = '<i class="fas fa-unlock"></i>';
+      lockIcon.classList.add('unlocked');
+      showToast('🔓 Menu Absensi dan Management telah dibuka');
+    }
+
+    function lockMenu() {
+      isUnlocked = false;
+      hiddenTabs.forEach(tab => tab.classList.remove('visible'));
+      lockIcon.innerHTML = '<i class="fas fa-lock"></i>';
+      lockIcon.classList.remove('unlocked');
+      // Jika sedang di halaman yang tersembunyi, pindah ke dashboard
+      const activeTab = document.querySelector('.nav-tab.active');
+      if (activeTab && (activeTab.dataset.page === 'absensi' || activeTab.dataset.page === 'management')) {
+        switchPage('dashboard');
+      }
+    }
+
+    // ----- PASSWORD MODAL -----
+    function openPasswordModal() {
+      passwordModal.classList.add('show');
+      passwordInput.value = '';
+      passwordError.classList.remove('show');
+      setTimeout(() => passwordInput.focus(), 300);
+    }
+
+    function closePasswordModal() {
+      passwordModal.classList.remove('show');
+      passwordInput.value = '';
+      passwordError.classList.remove('show');
+    }
+
+    function verifyPassword() {
+      const password = passwordInput.value.trim();
+      if (password === CORRECT_PASSWORD) {
+        closePasswordModal();
+        unlockMenu();
+        clickCount = 0;
+      } else {
+        passwordError.classList.add('show');
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }
+
+    // ----- SECRET CLICK AREA (3x klik) -----
+    secretClickArea.addEventListener('click', function(e) {
+      e.stopPropagation();
+      clickCount++;
+      
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(() => {
+        clickCount = 0;
+      }, 2000);
+      
+      if (clickCount >= 3) {
+        clickCount = 0;
+        clearTimeout(clickTimer);
+        if (isUnlocked) {
+          lockMenu();
+          showToast('🔒 Menu Absensi dan Management telah disembunyikan');
+        } else {
+          openPasswordModal();
+        }
+      }
+    });
+
+    // ----- LOCK ICON CLICK -----
+    lockIcon.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (isUnlocked) {
+        lockMenu();
+        showToast('🔒 Menu Absensi dan Management telah disembunyikan');
+      } else {
+        openPasswordModal();
+      }
+    });
+
+    // ----- PASSWORD MODAL EVENTS -----
+    submitPasswordBtn.addEventListener('click', verifyPassword);
+    cancelPasswordBtn.addEventListener('click', closePasswordModal);
+    closePasswordModalBtn.addEventListener('click', closePasswordModal);
+    passwordModal.addEventListener('click', function(e) {
+      if (e.target === passwordModal) closePasswordModal();
+    });
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') verifyPassword();
+    });
+
+    // ----- DASHBOARD FUNCTIONS -----
+    function updateDashboard() {
+      const totalTraining = schedules.length;
+      let totalParticipants = 0;
+      let deptSet = new Set();
+      let totalTarget = 0;
+      let totalHadir = 0;
+
+      schedules.forEach(s => {
+        const attendance = s.attendance || {};
+        Object.keys(attendance).forEach(dept => {
+          deptSet.add(dept);
+          totalParticipants += attendance[dept] || 0;
+        });
+        if (s.targetDepts) {
+          s.targetDepts.forEach(d => {
+            totalTarget++;
+            if (attendance[d] && attendance[d] > 0) totalHadir++;
+          });
+        }
+      });
+
+      document.getElementById('totalTraining').textContent = totalTraining;
+      document.getElementById('totalParticipants').textContent = totalParticipants;
+      document.getElementById('totalDepartments').textContent = deptSet.size;
+      
+      const avgAttendance = totalTarget > 0 ? Math.round((totalHadir / totalTarget) * 100) : 0;
+      document.getElementById('avgAttendance').textContent = avgAttendance + '%';
+
+      const trainingChart = document.getElementById('trainingChart');
+      if (schedules.length === 0) {
+        trainingChart.innerHTML = '<p style="color:#8899b5; text-align:center; padding:20px;">Belum ada data training</p>';
+      } else {
+        const maxAttendance = Math.max(...schedules.map(s => {
+          return Object.values(s.attendance || {}).reduce((a, b) => a + b, 0);
+        }), 1);
+
+        trainingChart.innerHTML = schedules.map(s => {
+          const total = Object.values(s.attendance || {}).reduce((a, b) => a + b, 0);
+          const percentage = Math.round((total / maxAttendance) * 100);
+          const shortName = s.name.length > 15 ? s.name.substring(0, 12) + '...' : s.name;
+          return `<div class="chart-bar-item">
+            <span class="label">${shortName}</span>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: ${percentage}%; min-width: 30px;">${total}</div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      const deptAttendance = {};
+      schedules.forEach(s => {
+        const att = s.attendance || {};
+        Object.keys(att).forEach(dept => {
+          deptAttendance[dept] = (deptAttendance[dept] || 0) + att[dept];
+        });
+      });
+
+      const deptNames = Object.keys(deptAttendance);
+      const deptValues = Object.values(deptAttendance);
+      const totalDept = deptValues.reduce((a, b) => a + b, 0);
+
+      const pieVisual = document.getElementById('pieVisual');
+      const pieLegend = document.getElementById('pieLegend');
+
+      if (deptNames.length === 0 || totalDept === 0) {
+        pieVisual.style.background = '#e9eff6';
+        pieLegend.innerHTML = '<p style="color:#8899b5;">Belum ada data</p>';
+      } else {
+        const colors = ['#2a7de1', '#0f7b4f', '#e67e22', '#1a7a8a', '#8e44ad', '#e74c3c'];
+        let cumulative = 0;
+        const colorStops = deptNames.map((name, i) => {
+          const percentage = (deptValues[i] / totalDept) * 100;
+          const start = cumulative;
+          cumulative += percentage;
+          return `${colors[i % colors.length]} ${start}% ${cumulative}%`;
+        });
+        pieVisual.style.background = `conic-gradient(${colorStops.join(', ')})`;
+
+        pieLegend.innerHTML = deptNames.map((name, i) => `
+          <div class="pie-legend-item">
+            <span class="color-dot" style="background: ${colors[i % colors.length]}"></span>
+            ${name}: ${deptValues[i]} (${Math.round((deptValues[i]/totalDept)*100)}%)
+          </div>
+        `).join('');
+      }
+
+      const tableContainer = document.getElementById('detailTableContainer');
+      if (schedules.length === 0) {
+        tableContainer.innerHTML = '<p style="color:#8899b5; text-align:center; padding:20px;">Belum ada data training</p>';
+        return;
+      }
+
+      const allDepts = [...new Set(schedules.flatMap(s => s.targetDepts || []))];
+      let tableHtml = `<table>
+        <thead>
+          <tr>
+            <th>Training</th>
+            <th>Tanggal</th>`;
+      
+      allDepts.forEach(d => {
+        tableHtml += `<th>${d}</th>`;
+      });
+      
+      tableHtml += `<th>Total</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+      schedules.forEach(s => {
+        const att = s.attendance || {};
+        const total = Object.values(att).reduce((a, b) => a + b, 0);
+        tableHtml += `<tr>
+          <td style="font-weight:500; color:#0b2b4a;">${s.name}</td>
+          <td style="color:#476085;">${s.date}</td>`;
+        
+        allDepts.forEach(d => {
+          const val = att[d] || '-';
+          tableHtml += `<td style="font-weight:${val !== '-' ? '600' : '400'};">${val}</td>`;
+        });
+        
+        tableHtml += `<td style="font-weight:700; color:#0b2b4a;">${total}</td>
+        </tr>`;
+      });
+
+      tableHtml += `</tbody></table>`;
+      tableContainer.innerHTML = tableHtml;
+    }
+
+    // ----- CALENDAR FUNCTIONS -----
+    function renderCalendar() {
+      const year = calendarCurrentDate.getFullYear();
+      const month = calendarCurrentDate.getMonth();
+      
+      currentMonthYear.textContent = new Date(year, month).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+      
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const daysInPrevMonth = new Date(year, month, 0).getDate();
+      
+      const monthEvents = schedules.filter(s => {
+        const d = new Date(s.date);
+        return d.getMonth() === month && d.getFullYear() === year;
+      });
+      
+      const totalEvents = monthEvents.length;
+      calendarBadge.textContent = totalEvents + ' event';
+      
+      let html = '';
+      
+      const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+      dayNames.forEach(name => {
+        html += `<div class="calendar-day-header">${name}</div>`;
+      });
+      
+      const startDay = firstDay === 0 ? 6 : firstDay - 1;
+      for (let i = startDay - 1; i >= 0; i--) {
+        const day = daysInPrevMonth - i;
+        html += `<div class="calendar-day">
+          <div class="day-number other-month">${day}</div>
+        </div>`;
+      }
+      
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const events = monthEvents.filter(s => s.date === dateStr);
+        const isToday = new Date().toDateString() === new Date(year, month, day).toDateString();
+        const hasEvent = events.length > 0;
+        
+        let dayClass = 'calendar-day';
+        if (isToday) dayClass += ' today';
+        if (hasEvent) dayClass += ' has-event';
+        
+        html += `<div class="${dayClass}" data-date="${dateStr}" data-has-event="${hasEvent}">`;
+        html += `<div class="day-number">${day}</div>`;
+        
+        if (hasEvent) {
+          events.slice(0, 2).forEach(event => {
+            const deptCount = event.targetDepts ? event.targetDepts.length : 0;
+            const shortName = event.name.length > 10 ? event.name.substring(0, 8) + '…' : event.name;
+            html += `<div class="event-item">
+              ${shortName}
+              <span class="dept-count">${deptCount}</span>
+            </div>`;
+          });
+          if (events.length > 2) {
+            html += `<div class="event-more">+${events.length - 2} lagi</div>`;
+          }
+        }
+        
+        html += `</div>`;
+      }
+      
+      const totalCells = startDay + daysInMonth;
+      const remainingCells = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+      for (let day = 1; day <= remainingCells; day++) {
+        html += `<div class="calendar-day">
+          <div class="day-number other-month">${day}</div>
+        </div>`;
+      }
+      
+      calendarGrid.innerHTML = html;
+      
+      document.querySelectorAll('.calendar-day.has-event').forEach(el => {
+        el.addEventListener('click', function() {
+          const date = this.dataset.date;
+          const events = schedules.filter(s => s.date === date);
+          if (events.length > 0) {
+            openCalendarModal(date, events);
+          }
+        });
+      });
+    }
+
+    function openCalendarModal(date, events) {
+      const formattedDate = formatDate(date);
+      calendarModalTitle.textContent = `Training pada ${formattedDate}`;
+      
+      let content = '';
+      events.forEach((s) => {
+        const deptList = s.targetDepts ? s.targetDepts.join(', ') : '-';
+        const attendance = s.attendance || {};
+        const totalHadir = Object.values(attendance).reduce((a, b) => a + b, 0);
+        content += `
+          <div style="background:#f5f9ff; padding:14px 18px; border-radius:16px; margin-bottom:10px; border-left:4px solid #2a7de1; word-wrap:break-word;">
+            <div style="font-weight:700; color:#0b2b4a; font-size:16px; word-wrap:break-word;">${s.name}</div>
+            <div style="font-size:13px; color:#476085; margin-top:4px; word-wrap:break-word;">
+              <i class="far fa-clock"></i> ${s.time} · <i class="fas fa-map-pin"></i> ${s.location}
+            </div>
+            <div style="font-size:13px; color:#476085; margin-top:2px; word-wrap:break-word;">
+              <i class="fas fa-users"></i> Target: ${deptList}
+            </div>
+            <div style="font-size:13px; color:#0f7b4f; margin-top:2px; font-weight:600;">
+              <i class="fas fa-user-check"></i> Total hadir: ${totalHadir} orang
+            </div>
+          </div>
+        `;
+      });
+      
+      calendarModalContent.innerHTML = content;
+      calendarModal.classList.add('show');
+    }
+
+    function closeCalendarModal() {
+      calendarModal.classList.remove('show');
+    }
+
+    // ----- fungsi render -----
+    function renderDepartemen() {
+      if (departments.length === 0) {
+        deptListContainer.innerHTML = `<span class="empty-dept">Belum ada departemen. Tambahkan di bawah.</span>`;
+      } else {
+        deptListContainer.innerHTML = departments.map(d => 
+          `<span class="dept-pill">
+            ${d} 
+            <span class="del" data-dept="${d}">✕</span>
+          </span>`
+        ).join('');
+      }
+      deptCountBadge.textContent = departments.length + ' departemen';
+      
+      deptCheckboxContainer.innerHTML = departments.map(d => 
+        `<label><input type="checkbox" class="dept-checkbox" value="${d}"> ${d}</label>`
+      ).join('');
+      
+      document.querySelectorAll('.dept-pill .del').forEach(el => {
+        el.addEventListener('click', function(e) {
+          const dept = this.getAttribute('data-dept');
+          if (confirm(`Hapus departemen "${dept}"?`)) {
+            departments = departments.filter(d => d !== dept);
+            schedules.forEach(s => { if (s.attendance) delete s.attendance[dept]; });
+            renderAll();
+            showToast(`Departemen "${dept}" dihapus`);
+          }
+        });
+      });
+    }
+
+    function renderSchedules() {
+      if (schedules.length === 0) {
+        scheduleListEl.innerHTML = '';
+        emptyScheduleEl.style.display = 'block';
+        totalBadge.textContent = '0 jadwal';
+        return;
+      }
+      emptyScheduleEl.style.display = 'none';
+      totalBadge.textContent = schedules.length + ' jadwal';
+
+      scheduleListEl.innerHTML = schedules.map((s) => {
+        const targetDepts = s.targetDepts || [];
+        
+        const deptTags = targetDepts.map(dept => {
+          const count = s.attendance && s.attendance[dept] ? s.attendance[dept] : 0;
+          const hadirClass = count > 0 ? 'hadir' : '';
+          return `<span class="dept-tag ${hadirClass}">
+            ${dept}
+            <span class="count">${count}</span>
+          </span>`;
+        }).join('');
+
+        const totalHadir = Object.values(s.attendance || {}).reduce((a, b) => a + b, 0);
+        const totalTarget = targetDepts.length;
+
+        return `<div class="schedule-card" data-id="${s.id}">
+          <div class="title">${s.name}</div>
+          <div class="meta">
+            <span><i class="far fa-calendar"></i> ${s.date} · ${s.time}</span>
+            <span><i class="fas fa-map-pin"></i> ${s.location}</span>
+          </div>
+          <div class="dept-target">${deptTags}</div>
+          <div class="footer-card">
+            <span><i class="fas fa-users"></i> ${totalTarget} dept target</span>
+            <span style="color:#1f6f4a;"><i class="fas fa-user-check"></i> ${totalHadir} total hadir</span>
+          </div>
+          <div class="click-hint"><i class="fas fa-hand-pointer"></i> Klik untuk update kehadiran</div>
+        </div>`;
+      }).join('');
+
+      document.querySelectorAll('.schedule-card').forEach(card => {
+        card.addEventListener('click', function() {
+          const id = parseInt(this.dataset.id);
+          openAttendanceModal(id);
+        });
+      });
+    }
+
+    function renderManageList() {
+      if (schedules.length === 0) {
+        manageScheduleList.innerHTML = '';
+        emptyManageSchedule.style.display = 'block';
+        manageListBadge.textContent = '0 jadwal';
+        return;
+      }
+      emptyManageSchedule.style.display = 'none';
+      manageListBadge.textContent = schedules.length + ' jadwal';
+
+      manageScheduleList.innerHTML = schedules.map(s => {
+        const deptList = s.targetDepts || [];
+        return `
+          <div class="schedule-manage-item" data-id="${s.id}">
+            <div class="info">
+              <div class="name">${s.name}</div>
+              <div class="detail">${s.date} · ${s.time} · ${s.location}</div>
+              <div class="dept-list">
+                ${deptList.map(d => `<span class="mini-tag">${d}</span>`).join('')}
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn-edit" onclick="editSchedule(${s.id})"><i class="fas fa-edit"></i> Edit</button>
+              <button class="btn-delete" onclick="deleteSchedule(${s.id})"><i class="fas fa-trash"></i> Hapus</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ----- MODAL FUNCTIONS -----
+    function openAttendanceModal(scheduleId) {
+      const schedule = schedules.find(s => s.id === scheduleId);
+      if (!schedule) return;
+      
+      currentModalScheduleId = scheduleId;
+      modalTempData = { ...schedule.attendance } || {};
+      
+      modalTitle.textContent = schedule.name;
+      modalSub.textContent = `${schedule.date} · ${schedule.time} · ${schedule.location}`;
+      
+      const target = schedule.targetDepts || [];
+      if (target.length === 0) {
+        modalDeptList.innerHTML = '<div style="padding:16px; color:#667; text-align:center;">Tidak ada departemen target.</div>';
+      } else {
+        modalDeptList.innerHTML = target.map(dept => {
+          const currentValue = modalTempData[dept] || 0;
+          return `<div class="modal-dept-item" data-dept="${dept}">
+            <span class="dept-name">${dept}</span>
+            <div class="dept-input-group">
+              <input type="number" min="0" max="999" value="${currentValue}" class="modal-count-input">
+              <button class="btn-update-modal update-single">Update</button>
+            </div>
+          </div>`;
+        }).join('');
+        
+        document.querySelectorAll('.update-single').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const item = this.closest('.modal-dept-item');
+            const dept = item.dataset.dept;
+            const input = item.querySelector('.modal-count-input');
+            const val = parseInt(input.value) || 0;
+            modalTempData[dept] = val;
+            showToast(`✅ ${dept}: ${val} hadir (tersimpan sementara)`);
+          });
+        });
+
+        document.querySelectorAll('.modal-count-input').forEach(input => {
+          input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              const item = this.closest('.modal-dept-item');
+              const dept = item.dataset.dept;
+              const val = parseInt(this.value) || 0;
+              modalTempData[dept] = val;
+              showToast(`✅ ${dept}: ${val} hadir`);
+            }
+          });
+        });
+      }
+      
+      modalOverlay.classList.add('show');
+    }
+
+    function closeModal() {
+      modalOverlay.classList.remove('show');
+      currentModalScheduleId = null;
+      modalTempData = {};
+    }
+
+    function saveAllModal() {
+      if (currentModalScheduleId === null) return;
+      
+      const schedule = schedules.find(s => s.id === currentModalScheduleId);
+      if (!schedule) return;
+      
+      Object.keys(modalTempData).forEach(dept => {
+        schedule.attendance[dept] = modalTempData[dept];
+      });
+      
+      renderAll();
+      closeModal();
+      showToast('✅ Semua perubahan kehadiran telah disimpan!');
+    }
+
+    // ----- EDIT & DELETE FUNCTIONS (global) -----
+    window.editSchedule = function(id) {
+      const schedule = schedules.find(s => s.id === id);
+      if (!schedule) return;
+      
+      currentEditId = id;
+      editScheduleId.value = id;
+      
+      trainingName.value = schedule.name;
+      trainingDate.value = schedule.date;
+      trainingTime.value = schedule.time;
+      trainingLocation.value = schedule.location;
+      
+      document.querySelectorAll('.dept-checkbox').forEach(cb => {
+        cb.checked = schedule.targetDepts.includes(cb.value);
+      });
+      
+      formTitle.innerHTML = '<i class="fas fa-edit"></i> Edit Jadwal Training';
+      saveBtnText.textContent = 'Update Jadwal';
+      cancelEditBtn.style.display = 'inline-flex';
+      
+      document.getElementById('trainingForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    window.deleteSchedule = function(id) {
+      if (confirm('Yakin ingin menghapus jadwal ini?')) {
+        schedules = schedules.filter(s => s.id !== id);
+        renderAll();
+        showToast('🗑️ Jadwal berhasil dihapus');
+      }
+    };
+
+    function cancelEdit() {
+      currentEditId = null;
+      editScheduleId.value = '';
+      formTitle.innerHTML = '<i class="fas fa-plus-circle"></i> Buat Jadwal Training Baru';
+      saveBtnText.textContent = 'Simpan Jadwal';
+      cancelEditBtn.style.display = 'none';
+      resetForm();
+    }
+
+    function resetForm() {
+      trainingName.value = '';
+      trainingDate.value = '';
+      trainingTime.value = '09:00';
+      trainingLocation.value = '';
+      document.querySelectorAll('.dept-checkbox').forEach(cb => cb.checked = false);
+    }
+
+    // ----- render all -----
+    function renderAll() {
+      renderDepartemen();
+      renderSchedules();
+      renderManageList();
+      renderCalendar();
+      updateDashboard();
+    }
+
+    // ----- add departemen -----
+    addDeptBtn.addEventListener('click', function() {
+      const val = newDeptInput.value.trim();
+      if (val && !departments.includes(val)) {
+        departments.push(val);
+        newDeptInput.value = '';
+        renderAll();
+        showToast(`Departemen "${val}" ditambahkan`);
+      } else if (val && departments.includes(val)) {
+        showToast('⚠️ Departemen sudah ada.');
+      } else {
+        showToast('⚠️ Masukkan nama departemen.');
+      }
+    });
+    newDeptInput.addEventListener('keypress', e => { if (e.key === 'Enter') addDeptBtn.click(); });
+
+    // ----- simpan / update jadwal -----
+    saveBtn.addEventListener('click', function() {
+      const name = trainingName.value.trim();
+      const date = trainingDate.value;
+      const time = trainingTime.value;
+      const location = trainingLocation.value.trim();
+      if (!name || !date || !time || !location) {
+        showToast('⚠️ Lengkapi semua field training.');
+        return;
+      }
+      const checkboxes = document.querySelectorAll('.dept-checkbox:checked');
+      const targetDepts = Array.from(checkboxes).map(cb => cb.value);
+      if (targetDepts.length === 0) {
+        showToast('⚠️ Pilih minimal satu departemen target.');
+        return;
+      }
+
+      const editId = parseInt(editScheduleId.value);
+      
+      if (editId) {
+        const index = schedules.findIndex(s => s.id === editId);
+        if (index !== -1) {
+          const oldAttendance = schedules[index].attendance || {};
+          const newAttendance = {};
+          targetDepts.forEach(d => {
+            newAttendance[d] = oldAttendance[d] || 0;
+          });
+          
+          schedules[index] = {
+            ...schedules[index],
+            name: name,
+            date: date,
+            time: time,
+            location: location,
+            targetDepts: targetDepts,
+            attendance: newAttendance
+          };
+          
+          showToast('✅ Jadwal berhasil diupdate!');
+        }
+      } else {
+        const attendance = {};
+        targetDepts.forEach(d => { attendance[d] = 0; });
+
+        const newSchedule = {
+          id: generateId(),
+          name: name,
+          date: date,
+          time: time,
+          location: location,
+          targetDepts: targetDepts,
+          attendance: attendance
+        };
+        schedules.push(newSchedule);
+        showToast('✅ Jadwal training berhasil disimpan!');
+      }
+      
+      cancelEdit();
+      renderAll();
+      switchPage('absensi');
+    });
+
+    cancelEditBtn.addEventListener('click', cancelEdit);
+
+    // ----- navigasi -----
+    function switchPage(pageId) {
+      navTabs.forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.page === pageId);
+      });
+      Object.keys(pages).forEach(key => {
+        pages[key].classList.toggle('active', key === pageId);
+      });
+      if (pageId === 'dashboard') updateDashboard();
+      if (pageId === 'calendar') renderCalendar();
+      if (pageId === 'management') {
+        renderManageList();
+        if (!currentEditId) cancelEdit();
+      }
+    }
+
+    navTabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        const page = this.dataset.page;
+        if (page) {
+          // Cek jika mencoba akses halaman tersembunyi tanpa unlock
+          if (this.classList.contains('hidden-tab') && !isUnlocked) {
+            openPasswordModal();
+            return;
+          }
+          switchPage(page);
+        }
+      });
+    });
+
+    // ----- modal events -----
+    closeModalBtn.addEventListener('click', closeModal);
+    closeModalFooterBtn.addEventListener('click', closeModal);
+    saveAllModalBtn.addEventListener('click', saveAllModal);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeModal();
+    });
+
+    // ----- calendar events -----
+    prevMonthBtn.addEventListener('click', function() {
+      calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() - 1);
+      renderCalendar();
+    });
+    nextMonthBtn.addEventListener('click', function() {
+      calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + 1);
+      renderCalendar();
+    });
+    closeCalendarModalBtn.addEventListener('click', closeCalendarModal);
+    closeCalendarModalFooterBtn.addEventListener('click', closeCalendarModal);
+    calendarModal.addEventListener('click', (e) => {
+      if (e.target === calendarModal) closeCalendarModal();
+    });
+
+    // ----- inisialisasi -----
+    // Pastikan hidden tabs tersembunyi di awal
+    lockMenu();
+    
+    renderAll();
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    trainingDate.value = tomorrow.toISOString().split('T')[0];
+    trainingTime.value = '09:00';
+    resetForm();
+
+    switchPage('dashboard');
+  })();
+</script>
+</body>
+</html>
